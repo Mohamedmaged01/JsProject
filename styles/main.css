@@ -1,0 +1,45 @@
+body {
+    background: linear-gradient(254.21deg, #09C1E0 5.77%, #05697A 131.39%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+.empty {
+    background: #DFFAFF;
+    width: 91.44px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.letter-e {
+    color: #09C1E0;
+    font-size: 38px;
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.e-learning {
+    color: #05697A;
+    font-size: 36px;
+    margin-top: 20px;
+}
+
+.sentence {
+    color: #05697A;
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: normal;
+}

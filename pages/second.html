@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/second.css">
+    <title>Second Page</title>
+</head>
+
+<body>
+    <div class="e-learning-container">
+        <div class="empty">
+            <span class="letter-e">E</span>
+        </div>
+        <h2 class="e-learning">-learning</h2>
+    </div>
+    <div class="container">
+        <div class="left-section">
+            <img src="../images/s1.png" alt="Second Study Plan Image" class="image">
+        </div>
+        <div class="right-section">
+            <h1>Welcome to the Second Page</h1>
+            <p>This is the second page of the application.</p>
+            <div class="line-separator">
+                <div class="line-left"></div>
+                <div class="line-right"></div>
+            </div>
+            <button id="continueBtn">
+                Continue
+                <span class="arrow">→</span>
+            </button>
+            <button id="backBtn">
+                <span class="arrow">←</span>
+                Back
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            window.location.href = 'enroll.html';
+        });
+        document.getElementById('backBtn').addEventListener('click', function() {
+            window.location.href = 'first.html';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sliding Login Form</title>
+    <link rel="stylesheet" type="text/css" href="../styles/enroll.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container" id="main">
+      <div class="sign-up">
+        <form id="signUpForm">
+          <h1>Create Account</h1>
+
+          <p>or use your email for registration</p>
+          <input type="text" id="UserInp" placeholder="Name" required />
+          <span id="nameError" class="error"></span>
+          <input
+            type="email"
+            id="EmailInpSignUp"
+            placeholder="Email"
+            required
+          />
+          <span id="emailErrorSignUp" class="error"></span>
+          <input
+            type="password"
+            id="PassInpSignUp"
+            placeholder="Password"
+            required
+          />
+          <span id="passwordErrorSignUp" class="error"></span>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
+      <div class="sign-in">
+        <form id="loginForm">
+          <h1>Sign in</h1>
+          <p>or use your account</p>
+          <input type="email" id="EmailInpLogin" placeholder="Email" required />
+          <span id="emailErrorLogin" class="error"></span>
+          <input
+            type="password"
+            id="PassInpLogin"
+            placeholder="Password"
+            required
+          />
+          <span id="passwordErrorLogin" class="error"></span>
+          <a href="#" id="forgotPassword">Forgot your Password?</a>
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-left">
+            <h1>Welcome Back!</h1>
+            <p>
+              To keep connected with us please login with your personal info
+            </p>
+            <button id="signIn">Sign In</button>
+          </div>
+          <div class="overlay-right">
+            <h1>Hello</h1>
+            <p>Enter your personal details and start journey with us</p>
+            <button id="signUp">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="../scripts/enroll.js"></script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/first.css">
+    <title>First Page</title>
+</head>
+
+<body>
+    <div class="e-learning-container">
+        <div class="empty">
+            <span class="letter-e">E</span>
+        </div>
+        <h2 class="e-learning">-learning</h2>
+    </div>
+
+    <div class="container">
+
+        <div class="left-section">
+            <img src="../images/f1.png" alt="Study Plan Image" class="image">
+        </div>
+
+        <div class="right-section">
+            <h1>Study according to your plan</h1>
+            <p>Study according to the time that suits you, anytime and anywhere</p>
+
+            <div class="line-separator">
+                <div class="line-left"></div>
+                <div class="line-right"></div>
+            </div>
+
+            <button id="continueBtn">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            window.location.href = 'second.html';
+        });
+    </script>
+</body>
+
+</html>
