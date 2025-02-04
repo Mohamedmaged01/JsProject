@@ -245,13 +245,11 @@
     </footer>
 
     <script>
-      // Logout function
       function logout() {
         localStorage.removeItem("currentUser");
         window.location.href = "first.html";
       }
 
-      // Display enrolled courses
       const courseList = document.getElementById("course-list");
 
       function displayCourses() {
@@ -263,12 +261,11 @@
           courseCard.className = "course-card";
           courseCard.innerHTML = `
             <h3>${course.title}</h3>
-            <p>Level: ${course.level}</p>
+            <p>Level: ${course.categories}</p>
           `;
           courseList.appendChild(courseCard);
         });
       }
-
       window.addEventListener("load", displayCourses);
     </script>
   </body>
