@@ -2,312 +2,258 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>home</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
-    <title>ELEARNING</title>
-    <style>
-      /* General Styles */
-      body {
-        font-family: "Arial", sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #333;
-      }
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      header {
-        background: linear-gradient(135deg, #260b42, #7213c1);
-        color: white;
-        padding: 20px 0;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      header h1 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: bold;
-      }
-
-      nav {
-        background: linear-gradient(135deg, #260b42, #7213c1);
-        color: white;
-        padding: 10px 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      nav .nav-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      nav .logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: white;
-      }
-
-      nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        gap: 20px;
-      }
-
-      nav ul li {
-        display: inline;
-      }
-
-      nav ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 16px;
-        transition: color 0.3s;
-      }
-
-      nav ul li a:hover {
-        color: #ddd;
-      }
-
-      footer {
-        background: linear-gradient(135deg, #260b42, #7213c1);
-        color: white;
-        text-align: center;
-        padding: 15px 0;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      footer p {
-        margin: 0;
-        font-size: 14px;
-      }
-
-      h1 {
-        text-align: center;
-        color: #6a11cb;
-        margin-bottom: 30px;
-        font-size: 32px;
-        font-weight: bold;
-      }
-
-      /* Filters Section */
-      .filters {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 30px;
-      }
-
-      input,
-      select {
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-        flex: 1;
-        outline: none;
-        transition: border-color 0.3s;
-      }
-
-      input:focus,
-      select:focus {
-        border-color: #6a11cb;
-      }
-
-      /* Course Cards */
-      .course-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-bottom: 40px;
-      }
-
-      .course-card {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        width: calc(33.333% - 20px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-
-      .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      .course-card h3 {
-        margin: 0 0 10px;
-        font-size: 20px;
-        color: #6a11cb;
-      }
-
-      .course-card p {
-        margin: 0 0 15px;
-        color: #666;
-      }
-
-      .course-card button {
-        padding: 10px 15px;
-        margin-top: 10px;
-        cursor: pointer;
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: background 0.3s;
-      }
-
-      .course-card button:hover {
-        background: linear-gradient(135deg, #2575fc, #6a11cb);
-      }
-      @media (max-width: 768px) {
-        .course-card {
-          width: calc(50% - 20px);
-        }
-      }
-
-      @media (max-width: 480px) {
-        .course-card {
-          width: 100%;
-        }
-
-        .filters {
-          flex-direction: column;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="../styles/style.css" />
   </head>
   <body>
-    <nav>
-      <div class="nav-container">
-        <div class="logo">ELEARNING</div>
-        <ul>
-          <li><a href="wishlist.html">Wishlist</a></li>
-          <li><a href="enrolled.html">Enrolled Courses</a></li>
-          <li><a href="completed.html">Completed Courses</a></li>
-          <li>
-            <a href="#profile"> <i class="fa-regular fa-user"></i></a>
-          </li>
-          <li>
-            <button
-              onclick="logout()"
-              style="
-                background: none;
-                border: none;
-                color: white;
-                font-size: 16px;
-                cursor: pointer;
-                transition: color 0.3s;
-              "
-            >
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <script>
-      function logout() {
-        localStorage.removeItem("currentUser");
-        window.location.href = "first.html";
-      }
-    </script>
+    <header class="header">
+      <section class="flex">
+        <a href="home.html" class="logo">Educa.</a>
 
-    <div class="container">
-      <h1>Courses</h1>
+        <form action="search.html" method="post" class="search-form">
+          <input
+            type="text"
+            name="search_box"
+            required
+            placeholder="search courses..."
+            maxlength="100"
+          />
+          <button type="submit" class="fas fa-search"></button>
+        </form>
 
-      <div class="filters">
-        <input type="text" id="search" placeholder="Search courses..." />
-        <select id="filter">
-          <option value="all">All Levels</option>
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="advanced">Advanced</option>
-        </select>
+        <div class="icons">
+          <div id="menu-btn" class="fas fa-bars"></div>
+          <div id="search-btn" class="fas fa-search"></div>
+          <div id="user-btn" class="fas fa-user"></div>
+          <div id="toggle-btn" class="fas fa-sun"></div>
+        </div>
+
+        <div class="profile">
+          <img src="images/pic-1.jpg" class="image" alt="" />
+          <h3 class="name">shaikh anas</h3>
+          <p class="role">studen</p>
+          <a href="profile.html" class="btn">view profile</a>
+          <div class="flex-btn">
+            <a href="login.html" class="option-btn">login</a>
+            <a href="register.html" class="option-btn">register</a>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <div class="side-bar">
+      <div id="close-btn">
+        <i class="fas fa-times"></i>
       </div>
-      <div id="course-list" class="course-list"></div>
+
+      <div class="profile">
+        <img src="images/pic-1.jpg" class="image" alt="" />
+        <h3 class="name">shaikh anas</h3>
+        <p class="role">studen</p>
+        <a href="profile.html" class="btn">view profile</a>
+      </div>
+
+      <nav class="navbar">
+        <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
+        <a href="wishlist.html"
+          ><i class="fas fa-question"></i><span>wishlist</span></a
+        >
+        <a href="courses.html"
+          ><i class="fas fa-graduation-cap"></i><span>courses</span></a
+        >
+        <a href="completed.html"
+          ><i class="fas fa-chalkboard-user"></i><span>completed</span></a
+        >
+        <a href="enrolled.html"
+          ><i class="fas fa-headset"></i><span>enrolled</span></a
+        >
+      </nav>
     </div>
+    <section class="courses">
+      <h1 class="heading">our courses</h1>
 
-    <footer>
-      <p>&copy; 2023 maged. All rights reserved.</p>
-    </footer>
-    <script>
-      const courses = [
-        { id: 1, title: "HTML", level: "beginner" },
-        { id: 2, title: "CSS", level: "beginner" },
-        { id: 3, title: "JavaScript", level: "intermediate" },
-        { id: 4, title: "Java", level: "advanced" },
-      ];
-      const courseList = document.getElementById("course-list");
-      const searchInput = document.getElementById("search");
-      const filterSelect = document.getElementById("filter");
-      function displayCourses() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filterLevel = filterSelect.value;
-        courseList.innerHTML = "";
+      <div class="box-container">
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-2.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-1.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete HTML tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-3.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-2.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete CSS tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-4.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-3.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete JS tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-5.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-4.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete Boostrap tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-6.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-5.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete JQuery tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+
+        <div class="box">
+          <div class="tutor">
+            <img src="images/pic-7.jpg" alt="" />
+            <div class="info">
+              <h3>john deo</h3>
+              <span>21-10-2022</span>
+            </div>
+          </div>
+          <div class="thumb">
+            <img src="images/thumb-6.png" alt="" />
+            <span>10 videos</span>
+          </div>
+          <h3 class="title">complete SASS tutorial</h3>
+          <a href="playlist.html" class="inline-btn">view playlist</a>
+        </div>
+      </div>
+      <script>
+        const courses = [
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-1.png",
+            title: "complete HTML tutorial",
+            videos: 10,
+          },
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-2.png",
+            title: "complete CSS tutorial",
+            videos: 10,
+          },
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-3.png",
+            title: "complete JS tutorial",
+            videos: 10,
+          },
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-4.png",
+            title: "complete Bootstrap tutorial",
+            videos: 10,
+          },
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-5.png",
+            title: "complete JQuery tutorial",
+            videos: 10,
+          },
+          {
+            tutor: "john deo",
+            date: "21-10-2022",
+            thumb: "images/thumb-6.png",
+            title: "complete SASS tutorial",
+            videos: 10,
+          },
+        ];
+
+        const container = document.querySelector(".box-container");
         courses.forEach((course) => {
-          const matchesSearch = course.title.toLowerCase().includes(searchTerm);
-          const matchesFilter =
-            filterLevel === "all" || course.level === filterLevel;
-          if (matchesSearch && matchesFilter) {
-            const courseCard = document.createElement("div");
-            courseCard.className = "course-card";
-            courseCard.innerHTML = `
-              <h3>${course.title}</h3>
-              <p>Level: ${course.level}</p>
-              <button onclick="addToWishlist(${course.id})">Add to Wishlist</button>
-              <button onclick="enrollInCourse(${course.id})">Enroll</button>
+          const box = document.createElement("div");
+          box.className = "box";
+          box.innerHTML = `
+               <div class="tutor">
+                  <img src="${course.thumb}" alt="" />
+                  <div class="info">
+                     <h3>${course.tutor}</h3>
+                     <span>${course.date}</span>
+                  </div>
+               </div>
+               <div class="thumb">
+                  <img src="${course.thumb}" alt="" />
+                  <span>${course.videos} videos</span>
+               </div>
+               <h3 class="title">${course.title}</h3>
+               <a href="playlist.html" class="inline-btn">view playlist</a>
+               <button class="inline-btn">Enroll</button>
+               <button class="inline-btn">Add to Wishlist</button>
             `;
-            courseList.appendChild(courseCard);
-          }
+          container.appendChild(box);
         });
-      }
-      function addToWishlist(courseId) {
-        const course = courses.find((c) => c.id === courseId);
-        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-        if (!wishlist.some((c) => c.id === courseId)) {
-          wishlist.push(course);
-          localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        }
-      }
-      function enrollInCourse(courseId) {
-        const course = courses.find((c) => c.id === courseId);
-        let enrolledCourses =
-          JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-        if (!enrolledCourses.some((c) => c.id === courseId)) {
-          enrolledCourses.push(course);
-          localStorage.setItem(
-            "enrolledCourses",
-            JSON.stringify(enrolledCourses)
-          );
-        }
-      }
-      searchInput.addEventListener("input", displayCourses);
-      filterSelect.addEventListener("change", displayCourses);
-      window.addEventListener("load", displayCourses);
-    </script>
+      </script>
+      <div class="more-btn">
+        <a href="courses.html" class="inline-option-btn">view all courses</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      &copy; copyright @ 2025 by <span>Team ITI</span> | all rights reserved!
+    </footer>
+    <script src="js/script.js"></script>
   </body>
 </html>
