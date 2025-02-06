@@ -285,51 +285,49 @@
   <body>
     <header class="header">
       <section class="flex">
-        <a style="color: white" href="Home.html" class="logo">3lmny</a>
+        <a style="color: white" href="home.html" class="logo">3lmny</a>
         <form id="search-form" class="search-form">
           <input
             type="text"
             id="search-box"
             name="search_box"
             required
-            placeholder="search courses..."
+            placeholder="Search courses..."
             maxlength="100"
           />
           <button type="submit" class="fas fa-search"></button>
         </form>
         <div class="icons">
           <div id="menu-btn" class="fas fa-bars"></div>
-          <div id="search-btn" class="fas fa-search"></div>
           <div id="user-btn" class="fas fa-user"></div>
-          <div id="toggle-btn" class="fas fa-sun"></div>
         </div>
         <div class="profile">
           <div class="flex-btn">
-            <a href="login.html" class="option-btn">login</a>
-            <a href="register.html" class="option-btn">register</a>
+            <a href="login.html" class="option-btn">Login</a>
+            <a href="register.html" class="option-btn">Register</a>
           </div>
         </div>
       </section>
     </header>
     <div class="side-bar">
       <nav class="navbar">
-        <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
+        <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="wishlist.html"
-          ><i class="fas fa-question"></i><span>wishlist</span></a
+          ><i class="fas fa-heart"></i><span>Wishlist</span></a
         >
         <a href="courses.html"
-          ><i class="fas fa-graduation-cap"></i><span>courses</span></a
+          ><i class="fas fa-graduation-cap"></i><span>Courses</span></a
         >
         <a href="completed.html"
-          ><i class="fas fa-chalkboard-user"></i><span>completed</span></a
+          ><i class="fas fa-check-circle"></i><span>Completed</span></a
         >
         <a href="enrolled.html"
-          ><i class="fas fa-headset"></i><span>enrolled</span></a
+          ><i class="fas fa-user-graduate"></i><span>Enrolled</span></a
         >
       </nav>
     </div>
     <section class="courses">
-      <h1 class="heading">our courses</h1>
+      <h1 class="heading">Our Courses</h1>
       <div class="filters">
         <select id="category-filter">
           <option value="">All Categories</option>
@@ -348,157 +346,183 @@
       </div>
       <div class="box-container"></div>
       <div class="more-btn">
-        <a href="courses.html" class="inline-option-btn">view all courses</a>
+        <a href="courses.html" class="inline-option-btn">View All Courses</a>
       </div>
     </section>
     <footer class="footer">
-      &copy; copyright @ 2025 by <span>Team ITI</span> | all rights reserved!
+      &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
     </footer>
     <script>
-      const courses = [
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-1.png",
-          title: "complete HTML tutorial",
-          description: "Learn HTML from scratch",
-          category: "HTML",
-          price: "free",
-          videos: 10,
-        },
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-2.png",
-          title: "complete CSS tutorial",
-          description: "Learn CSS from scratch",
-          category: "CSS",
-          price: "paid",
-          videos: 10,
-        },
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-3.png",
-          title: "complete JS tutorial",
-          description: "Learn JavaScript from scratch",
-          category: "JavaScript",
-          price: "free",
-          videos: 10,
-        },
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-4.png",
-          title: "complete Bootstrap tutorial",
-          description: "Learn Bootstrap from scratch",
-          category: "Bootstrap",
-          price: "paid",
-          videos: 10,
-        },
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-5.png",
-          title: "complete JQuery tutorial",
-          description: "Learn JQuery from scratch",
-          category: "JQuery",
-          price: "free",
-          videos: 10,
-        },
-        {
-          tutor: "john deo",
-          date: "21-10-2022",
-          thumb: "images/thumb-6.png",
-          title: "complete SASS tutorial",
-          description: "Learn SASS from scratch",
-          category: "SASS",
-          price: "paid",
-          videos: 10,
-        },
-      ];
+      let courses = JSON.parse(localStorage.getItem("courses")) || [];
+      if (!localStorage.getItem("courses")) {
+        localStorage.setItem("courses", JSON.stringify(courses));
+      }
+
+      const currentUser = {
+        username: "",
+      };
+
+      // Initialize enrolled courses for the user if not already stored
+      if (!localStorage.getItem(`enrolledCourses_${currentUser.username}`)) {
+        localStorage.setItem(
+          `enrolledCourses_${currentUser.username}`,
+          JSON.stringify([])
+        );
+      }
+      // Function to enroll in a course
+      function enrollInCourse(courseId) {
+        // Get the user's enrolled courses from local storage
+        const enrolledCourses = JSON.parse(
+          localStorage.getItem(`enrolledCourses_${currentUser.username}`)
+        );
+
+        // Check if the user is already enrolled in the course
+        if (enrolledCourses.includes(courseId)) {
+          alert("You are already enrolled in this course!");
+          return;
+        }
+
+        // Add the course ID to the user's enrolled courses
+        enrolledCourses.push(courseId);
+
+        // Update local storage
+        localStorage.setItem(
+          `enrolledCourses_${currentUser.username}`,
+          JSON.stringify(enrolledCourses)
+        );
+
+        // Refresh the displayed courses
+        displayCourses(courses);
+
+        alert("Enrollment successful!");
+      }
+
       const container = document.querySelector(".box-container");
+
       function displayCourses(filteredCourses) {
         container.innerHTML = "";
         if (filteredCourses.length === 0) {
           container.innerHTML = `<p class="no-results">No courses found.</p>`;
         } else {
+          // Get the user's enrolled courses from local storage
+          const enrolledCourses = JSON.parse(
+            localStorage.getItem(`enrolledCourses_${currentUser.username}`)
+          );
+
           filteredCourses.forEach((course) => {
             const box = document.createElement("div");
             box.className = "box";
             box.innerHTML = `
-                     <div class="tutor">
-                        <img src="${course.thumb}" alt="" />
-                        <div class="info">
-                           <h3>${course.tutor}</h3>
-                           <span>${course.date}</span>
-                        </div>
-                     </div>
-                     <div class="thumb">
-                        <img src="${course.thumb}" alt="" />
-                        <span>${course.videos} videos</span>
-                     </div>
-                     <h3 class="title">${course.title}</h3>
-                     <p>${course.description}</p>
-                     <a href="playlist.html" class="inline-btn">view playlist</a>
-                     <button class="inline-btn">Enroll</button>
-                     <button class="inline-btn">Add to Wishlist</button>
-                  `;
+              <div class="tutor">
+                <img src="${course.thumb}" alt="" />
+                <div class="info">
+                  <h3>${course.tutor}</h3>
+                  <span>${course.date}</span>
+                </div>
+              </div>
+              <div class="thumb">
+                <img src="${course.thumb}" alt="" />
+                <span>${course.videos} videos</span>
+              </div>
+              <h3 class="title">${course.title}</h3>
+              <p>${course.description}</p>
+              <a href="playlist.html" class="inline-btn">View Playlist</a>
+              <button class="inline-btn enroll-btn" data-course-id="${
+                course.id
+              }">
+                ${enrolledCourses.includes(course.id) ? "Enrolled" : "Enroll"}
+              </button>
+              <button class="inline-btn">Add to Wishlist</button>
+            `;
+
+            // Disable the enroll button if the user is already enrolled
+            const enrollButton = box.querySelector(".enroll-btn");
+            if (enrolledCourses.includes(course.id)) {
+              enrollButton.disabled = true;
+            }
+
+            // Add event listener to the enroll button
+            enrollButton.addEventListener("click", () => {
+              enrollInCourse(course.id);
+            });
+
             container.appendChild(box);
           });
         }
       }
-      function filterCourses() {
-        const searchQuery = document
-          .getElementById("search-box")
-          .value.toLowerCase();
-        const categoryFilter = document.getElementById("category-filter").value;
-        const priceFilter = document.getElementById("price-filter").value;
 
-        const filteredCourses = courses.filter((course) => {
-          const matchesSearch =
-            course.title.toLowerCase().includes(searchQuery) ||
-            course.description.toLowerCase().includes(searchQuery);
-          const matchesCategory = categoryFilter
-            ? course.category === categoryFilter
-            : true;
-          const matchesPrice = priceFilter
-            ? course.price === priceFilter
-            : true;
-
-          return matchesSearch && matchesCategory && matchesPrice;
+      document.querySelectorAll(".enroll-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          handleEnrollRequest(e.target.dataset.title);
         });
+      });
 
-        displayCourses(filteredCourses);
+      function handleEnrollRequest(courseTitle) {
+        const requests =
+          JSON.parse(localStorage.getItem("courseRequests")) || [];
+        const existingRequest = requests.find(
+          (request) => request.title === courseTitle
+        );
+
+        if (existingRequest) {
+          alert("You have already requested enrollment for this course.");
+          return;
+        }
+
+        // Save the enrollment request with a pending status
+        const newRequest = { title: courseTitle, status: "pending" };
+        requests.push(newRequest);
+        localStorage.setItem("courseRequests", JSON.stringify(requests));
+
+        // Update course status locally
+        courses = courses.map((course) =>
+          course.title === courseTitle
+            ? { ...course, status: "pending" }
+            : course
+        );
+        localStorage.setItem("courses", JSON.stringify(courses));
+        displayCourses(courses);
+        alert("Your enrollment request has been sent and is pending approval.");
       }
 
-      document.getElementById("search-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        filterCourses();
-      });
-
-      document
-        .getElementById("category-filter")
-        .addEventListener("change", filterCourses);
-      document
-        .getElementById("price-filter")
-        .addEventListener("change", filterCourses);
-      document
-        .getElementById("search-box")
-        .addEventListener("input", filterCourses);
       displayCourses(courses);
-      document.getElementById("menu-btn").addEventListener("click", () => {
-        document.querySelector(".side-bar").classList.toggle("active");
-      });
 
-      document.getElementById("user-btn").addEventListener("click", () => {
-        document.querySelector(".header .profile").classList.toggle("active");
-      });
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".side-bar") && !e.target.closest("#menu-btn")) {
-          document.querySelector(".side-bar").classList.remove("active");
-        }
-      });
+      // Simulate Admin Actions (Just for Testing)
+      function adminUpdateStatus(courseTitle, newStatus) {
+        let requests = JSON.parse(localStorage.getItem("courseRequests")) || [];
+        requests = requests.map((request) =>
+          request.title === courseTitle
+            ? { ...request, status: newStatus }
+            : request
+        );
+        localStorage.setItem("courseRequests", JSON.stringify(requests));
+
+        courses = courses.map((course) =>
+          course.title === courseTitle
+            ? { ...course, status: newStatus }
+            : course
+        );
+        localStorage.setItem("courses", JSON.stringify(courses));
+
+        displayCourses(courses);
+      }
+
+      // Example admin updates (for testing only)
+      setTimeout(() => {
+        adminUpdateStatus("Complete ANULAR Tutorial", "accepted");
+      }, 5000); // Automatically accepts request after 5 seconds for testing
+
+      const newCourse = {
+        tutor: "MAGEDSDASDASD",
+        status: "unenrolled",
+        thumb: "images/thumb-7.png",
+        title: "Complete ANULAR Tutorial",
+        description: "Learn React from scratch",
+        category: "JavaScript",
+        price: "free",
+        videos: 3,
+      };
+      addNewCourse(newCourse);
     </script>
   </body>
 </html>
