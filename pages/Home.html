@@ -9,17 +9,287 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
-
     <link rel="stylesheet" href="../styles/style.css" />
   </head>
+  <style>
+    /* General Styles */
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Header */
+    .header {
+      background-color: #000000;
+      color: #fff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header .flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header .logo {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .header .search-form {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      border-radius: 5px;
+      overflow: hidden;
+      width: 300px;
+    }
+
+    .header .search-form input {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: none;
+      outline: none;
+    }
+
+    .header .search-form button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .header .search-form button:hover {
+      background-color: black;
+    }
+
+    .header .icons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .header .icons div {
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .header .icons div:hover {
+      color: #ba34db;
+    }
+
+    .header .profile {
+      position: absolute;
+      top: 4rem;
+      right: 2rem;
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .header .profile.active {
+      display: block;
+    }
+
+    .header .profile img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+    }
+
+    .header .profile .name {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .header .profile .role {
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .header .profile .btn {
+      display: block;
+      background-color: #000000;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-align: center;
+      margin-top: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+    .header .profile .btn:hover {
+      background-color: black;
+    }
+    .side-bar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #070707;
+      color: #fff;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+    .side-bar.active {
+      left: 0;
+    }
+    .side-bar .profile {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #000000;
+    }
+    .side-bar .profile .name {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .side-bar .profile .role {
+      font-size: 0.9rem;
+    }
+    .side-bar .navbar {
+      padding: 1rem;
+    }
+    .side-bar .navbar a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.3s ease;
+      padding: 30px;
+    }
+    .side-bar .navbar a:hover {
+      background-color: #a12d95;
+      color: #fff;
+    }
+    .side-bar .navbar a i {
+      font-size: 1.2rem;
+    }
+    .courses {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .courses .heading {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .courses .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .courses .filters select {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+    .courses .box-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .courses .box {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .courses .box:hover {
+      transform: translateY(-5px);
+    }
+    .courses .box .tutor {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .courses .box .tutor img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+    .courses .box .thumb img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .courses .box .thumb span {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+    }
+    .courses .box .title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 0 1rem;
+      margin: 0.5rem 0;
+    }
+    .courses .box p {
+      font-size: 0.9rem;
+      color: #777;
+      padding: 0 1rem;
+      margin-bottom: 1rem;
+    }
+    .courses .box .inline-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background-color: #3498db;
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 5px;
+      margin: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+    .courses .box .inline-btn:hover {
+      background-color: #2980b9;
+    }
+    .footer {
+      background-color: #000000;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .footer span {
+      color: #3498db;
+    }
+  </style>
   <body>
     <header class="header">
       <section class="flex">
-        <a href="home.html" class="logo">Educa.</a>
-
-        <form action="search.html" method="post" class="search-form">
+        <a style="color: white" href="Home.html" class="logo">3lmny</a>
+        <form id="search-form" class="search-form">
           <input
             type="text"
+            id="search-box"
             name="search_box"
             required
             placeholder="search courses..."
@@ -27,19 +297,13 @@
           />
           <button type="submit" class="fas fa-search"></button>
         </form>
-
         <div class="icons">
           <div id="menu-btn" class="fas fa-bars"></div>
           <div id="search-btn" class="fas fa-search"></div>
           <div id="user-btn" class="fas fa-user"></div>
           <div id="toggle-btn" class="fas fa-sun"></div>
         </div>
-
         <div class="profile">
-          <img src="images/pic-1.jpg" class="image" alt="" />
-          <h3 class="name">shaikh anas</h3>
-          <p class="role">studen</p>
-          <a href="profile.html" class="btn">view profile</a>
           <div class="flex-btn">
             <a href="login.html" class="option-btn">login</a>
             <a href="register.html" class="option-btn">register</a>
@@ -47,19 +311,7 @@
         </div>
       </section>
     </header>
-
     <div class="side-bar">
-      <div id="close-btn">
-        <i class="fas fa-times"></i>
-      </div>
-
-      <div class="profile">
-        <img src="images/pic-1.jpg" class="image" alt="" />
-        <h3 class="name">shaikh anas</h3>
-        <p class="role">studen</p>
-        <a href="profile.html" class="btn">view profile</a>
-      </div>
-
       <nav class="navbar">
         <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
         <a href="wishlist.html"
@@ -78,182 +330,175 @@
     </div>
     <section class="courses">
       <h1 class="heading">our courses</h1>
-
-      <div class="box-container">
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-2.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-1.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete HTML tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
-
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-3.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-2.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete CSS tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
-
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-4.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-3.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete JS tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
-
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-5.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-4.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete Boostrap tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
-
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-6.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-5.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete JQuery tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
-
-        <div class="box">
-          <div class="tutor">
-            <img src="images/pic-7.jpg" alt="" />
-            <div class="info">
-              <h3>john deo</h3>
-              <span>21-10-2022</span>
-            </div>
-          </div>
-          <div class="thumb">
-            <img src="images/thumb-6.png" alt="" />
-            <span>10 videos</span>
-          </div>
-          <h3 class="title">complete SASS tutorial</h3>
-          <a href="playlist.html" class="inline-btn">view playlist</a>
-        </div>
+      <div class="filters">
+        <select id="category-filter">
+          <option value="">All Categories</option>
+          <option value="HTML">HTML</option>
+          <option value="CSS">CSS</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="Bootstrap">Bootstrap</option>
+          <option value="JQuery">JQuery</option>
+          <option value="SASS">SASS</option>
+        </select>
+        <select id="price-filter">
+          <option value="">All Prices</option>
+          <option value="free">Free</option>
+          <option value="paid">Paid</option>
+        </select>
       </div>
-      <script>
-        const courses = [
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-1.png",
-            title: "complete HTML tutorial",
-            videos: 10,
-          },
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-2.png",
-            title: "complete CSS tutorial",
-            videos: 10,
-          },
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-3.png",
-            title: "complete JS tutorial",
-            videos: 10,
-          },
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-4.png",
-            title: "complete Bootstrap tutorial",
-            videos: 10,
-          },
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-5.png",
-            title: "complete JQuery tutorial",
-            videos: 10,
-          },
-          {
-            tutor: "john deo",
-            date: "21-10-2022",
-            thumb: "images/thumb-6.png",
-            title: "complete SASS tutorial",
-            videos: 10,
-          },
-        ];
-
-        const container = document.querySelector(".box-container");
-        courses.forEach((course) => {
-          const box = document.createElement("div");
-          box.className = "box";
-          box.innerHTML = `
-               <div class="tutor">
-                  <img src="${course.thumb}" alt="" />
-                  <div class="info">
-                     <h3>${course.tutor}</h3>
-                     <span>${course.date}</span>
-                  </div>
-               </div>
-               <div class="thumb">
-                  <img src="${course.thumb}" alt="" />
-                  <span>${course.videos} videos</span>
-               </div>
-               <h3 class="title">${course.title}</h3>
-               <a href="playlist.html" class="inline-btn">view playlist</a>
-               <button class="inline-btn">Enroll</button>
-               <button class="inline-btn">Add to Wishlist</button>
-            `;
-          container.appendChild(box);
-        });
-      </script>
+      <div class="box-container"></div>
       <div class="more-btn">
         <a href="courses.html" class="inline-option-btn">view all courses</a>
       </div>
     </section>
-
     <footer class="footer">
       &copy; copyright @ 2025 by <span>Team ITI</span> | all rights reserved!
     </footer>
-    <script src="js/script.js"></script>
+    <script>
+      const courses = [
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-1.png",
+          title: "complete HTML tutorial",
+          description: "Learn HTML from scratch",
+          category: "HTML",
+          price: "free",
+          videos: 10,
+        },
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-2.png",
+          title: "complete CSS tutorial",
+          description: "Learn CSS from scratch",
+          category: "CSS",
+          price: "paid",
+          videos: 10,
+        },
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-3.png",
+          title: "complete JS tutorial",
+          description: "Learn JavaScript from scratch",
+          category: "JavaScript",
+          price: "free",
+          videos: 10,
+        },
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-4.png",
+          title: "complete Bootstrap tutorial",
+          description: "Learn Bootstrap from scratch",
+          category: "Bootstrap",
+          price: "paid",
+          videos: 10,
+        },
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-5.png",
+          title: "complete JQuery tutorial",
+          description: "Learn JQuery from scratch",
+          category: "JQuery",
+          price: "free",
+          videos: 10,
+        },
+        {
+          tutor: "john deo",
+          date: "21-10-2022",
+          thumb: "images/thumb-6.png",
+          title: "complete SASS tutorial",
+          description: "Learn SASS from scratch",
+          category: "SASS",
+          price: "paid",
+          videos: 10,
+        },
+      ];
+      const container = document.querySelector(".box-container");
+      function displayCourses(filteredCourses) {
+        container.innerHTML = "";
+        if (filteredCourses.length === 0) {
+          container.innerHTML = `<p class="no-results">No courses found.</p>`;
+        } else {
+          filteredCourses.forEach((course) => {
+            const box = document.createElement("div");
+            box.className = "box";
+            box.innerHTML = `
+                     <div class="tutor">
+                        <img src="${course.thumb}" alt="" />
+                        <div class="info">
+                           <h3>${course.tutor}</h3>
+                           <span>${course.date}</span>
+                        </div>
+                     </div>
+                     <div class="thumb">
+                        <img src="${course.thumb}" alt="" />
+                        <span>${course.videos} videos</span>
+                     </div>
+                     <h3 class="title">${course.title}</h3>
+                     <p>${course.description}</p>
+                     <a href="playlist.html" class="inline-btn">view playlist</a>
+                     <button class="inline-btn">Enroll</button>
+                     <button class="inline-btn">Add to Wishlist</button>
+                  `;
+            container.appendChild(box);
+          });
+        }
+      }
+      function filterCourses() {
+        const searchQuery = document
+          .getElementById("search-box")
+          .value.toLowerCase();
+        const categoryFilter = document.getElementById("category-filter").value;
+        const priceFilter = document.getElementById("price-filter").value;
+
+        const filteredCourses = courses.filter((course) => {
+          const matchesSearch =
+            course.title.toLowerCase().includes(searchQuery) ||
+            course.description.toLowerCase().includes(searchQuery);
+          const matchesCategory = categoryFilter
+            ? course.category === categoryFilter
+            : true;
+          const matchesPrice = priceFilter
+            ? course.price === priceFilter
+            : true;
+
+          return matchesSearch && matchesCategory && matchesPrice;
+        });
+
+        displayCourses(filteredCourses);
+      }
+
+      document.getElementById("search-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        filterCourses();
+      });
+
+      document
+        .getElementById("category-filter")
+        .addEventListener("change", filterCourses);
+      document
+        .getElementById("price-filter")
+        .addEventListener("change", filterCourses);
+      document
+        .getElementById("search-box")
+        .addEventListener("input", filterCourses);
+      displayCourses(courses);
+      document.getElementById("menu-btn").addEventListener("click", () => {
+        document.querySelector(".side-bar").classList.toggle("active");
+      });
+
+      document.getElementById("user-btn").addEventListener("click", () => {
+        document.querySelector(".header .profile").classList.toggle("active");
+      });
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".side-bar") && !e.target.closest("#menu-btn")) {
+          document.querySelector(".side-bar").classList.remove("active");
+        }
+      });
+    </script>
   </body>
 </html>
