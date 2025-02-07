@@ -73,7 +73,6 @@
         <button onclick="logout()">Logout</button>
       </div>
 
-      <!-- Course Management Section -->
       <div id="courseManagement" class="management-section active">
         <h2>Manage Courses</h2>
         <form id="courseForm">
@@ -89,9 +88,7 @@
             placeholder="Image URL"
             required
           />
-          <select id="courseCategory" required>
-            <!-- Options will be populated dynamically -->
-          </select>
+          <select id="courseCategory" required></select>
           <input
             type="text"
             id="courseInstructor"
@@ -123,12 +120,9 @@
           />
           <button type="submit">Add Course</button>
         </form>
-        <ul id="courseList">
-          <!-- Courses will be populated dynamically -->
-        </ul>
+        <ul id="courseList"></ul>
       </div>
 
-      <!-- Category Management Section -->
       <div id="categoryManagement" class="management-section">
         <h2>Manage Categories</h2>
         <form id="categoryForm">
@@ -140,12 +134,9 @@
           />
           <button type="submit">Add Category</button>
         </form>
-        <ul id="categoryList">
-          <!-- Categories will be populated dynamically -->
-        </ul>
+        <ul id="categoryList"></ul>
       </div>
 
-      <!-- Student Management Section -->
       <div id="studentManagement" class="management-section">
         <h2>Manage Students</h2>
         <table id="studentTable">
@@ -156,13 +147,10 @@
               <th>Progress</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Students will be populated dynamically -->
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
 
-      <!-- Registration Management Section -->
       <div id="registrationManagement" class="management-section">
         <h2>Manage Registrations</h2>
         <table id="registrationTable">
@@ -174,17 +162,12 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Registrations will be populated dynamically -->
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
 
     <script>
-      // ===============================
-      // Helper Functions for Local Storage
-      // ===============================
       const getData = (key) => {
         const data = localStorage.getItem(key);
         return data ? JSON.parse(data) : [];
@@ -194,9 +177,6 @@
         localStorage.setItem(key, JSON.stringify(data));
       };
 
-      // ===============================
-      // Initialization
-      // ===============================
       const initializeLocalStorage = () => {
         if (!localStorage.getItem("courses")) saveData("courses", []);
         if (!localStorage.getItem("categories")) saveData("categories", []);
@@ -207,9 +187,6 @@
 
       initializeLocalStorage();
 
-      // ===============================
-      // Rendering Functions
-      // ===============================
       const renderCourses = () => {
         const courses = getData("courses");
         const courseList = document.getElementById("courseList");
@@ -294,9 +271,6 @@
           .join("");
       };
 
-      // ===============================
-      // Delete Functions
-      // ===============================
       function deleteCourse(courseId) {
         let courses = getData("courses");
         courses = courses.filter((course) => course.id !== courseId);
@@ -312,10 +286,6 @@
         saveData("categories", categories);
         renderCategories();
       }
-
-      // ===============================
-      // Add Course & Category with Validation
-      // ===============================
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const title = document.getElementById("courseTitle").value.trim();
@@ -414,10 +384,6 @@
           saveData("categories", categories);
           renderCategories();
         });
-
-      // ===============================
-      // Enrollment Request Functions (User Side)
-      // ===============================
       function requestRegistration(courseId) {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (!loggedInUser) {
@@ -453,10 +419,6 @@
         );
         renderCourses();
       }
-
-      // ===============================
-      // Admin Registration Handling Functions
-      // ===============================
       function approveRegistration(registrationId) {
         let registrations = getData("registrations");
         const regIndex = registrations.findIndex(
@@ -468,8 +430,6 @@
         }
         registrations[regIndex].status = "approved";
         saveData("registrations", registrations);
-
-        // Add course to student's enrolled courses if not already present.
         const studentId = registrations[regIndex].studentId;
         const courseId = registrations[regIndex].courseId;
         const courses = getData("courses");
@@ -502,10 +462,6 @@
         alert("Registration rejected.");
         renderRegistrations();
       }
-
-      // ===============================
-      // View Management Functions
-      // ===============================
       function manageCourses() {
         document.getElementById("courseManagement").style.display = "block";
         document.getElementById("categoryManagement").style.display = "none";
@@ -533,21 +489,15 @@
         document.getElementById("studentManagement").style.display = "none";
         document.getElementById("registrationManagement").style.display =
           "block";
-        renderRegistrations(); // refresh registrations when viewing them
+        renderRegistrations();
       }
 
-      // ===============================
-      // Logout Function
-      // ===============================
       const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("loggedInUser");
         window.location.href = "Login.html";
       };
 
-      // ===============================
-      // Filtering Courses (if needed)
-      // ===============================
       function filterAndDisplayCourses() {
         let courses = getData("courses");
         const searchQuery = document
@@ -592,9 +542,6 @@
         .getElementById("price-filter")
         .addEventListener("change", filterAndDisplayCourses);
 
-      // ===============================
-      // Initial Rendering Calls
-      // ===============================
       const courses = initCourses();
       displayCourses(courses);
       renderCategories();
