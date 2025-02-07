@@ -237,19 +237,15 @@
         window.location.href = "first.html";
       }
     </script>
-
     <div class="container">
       <h1>Wishlist</h1>
-
       <div id="course-list" class="course-list"></div>
     </div>
-
     <footer>
       <p>&copy; 2023 maged. All rights reserved.</p>
     </footer>
     <script>
       const courseList = document.getElementById("course-list");
-
       function displayCourses() {
         const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
         courseList.innerHTML = "";
@@ -258,13 +254,12 @@
           courseCard.className = "course-card";
           courseCard.innerHTML = `
                         <h3>${course.title}</h3>
-                        <p>Level: ${course.level}</p>
+                        <p>category: ${course.categories}</p>
                         <button onclick="enrollInCourse(${course.id})">Enroll</button>
                     `;
           courseList.appendChild(courseCard);
         });
       }
-
       function enrollInCourse(courseId) {
         const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
         const course = wishlist.find((c) => c.id === courseId);
@@ -278,7 +273,6 @@
           );
         }
       }
-
       window.addEventListener("load", displayCourses);
     </script>
   </body>

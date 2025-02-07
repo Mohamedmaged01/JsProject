@@ -9,279 +9,188 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
-    <link rel="stylesheet" href="../styles/style.css" />
+    <title>ELEARNING</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      nav {
+        background: linear-gradient(135deg, #04feee, #0c35bd);
+        color: white;
+        padding: 10px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      nav .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+      }
+
+      nav ul li {
+        display: inline;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        transition: color 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: #ddd;
+      }
+
+      footer {
+        background: linear-gradient(135deg, #260b42, #7213c1);
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #6a11cb;
+        margin-bottom: 30px;
+        font-size: 32px;
+        font-weight: bold;
+      }
+
+      /* Filters Section */
+      .filters {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+
+      input,
+      select {
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        flex: 1;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #6a11cb;
+      }
+
+      /* Course Cards */
+      .course-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .course-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        width: calc(33.333% - 20px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .course-card h3 {
+        margin: 0 0 10px;
+        font-size: 20px;
+        color: #6a11cb;
+      }
+
+      .course-card p {
+        margin: 0 0 15px;
+        color: #666;
+      }
+
+      .course-card button {
+        padding: 10px 15px;
+        margin-top: 10px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background 0.3s;
+      }
+
+      .course-card button:hover {
+        background: linear-gradient(135deg, #2575fc, #6a11cb);
+      }
+      @media (max-width: 768px) {
+        .course-card {
+          width: calc(50% - 20px);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .course-card {
+          width: 100%;
+        }
+
+        .filters {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
-  <style>
-    /* General Styles */
-    body {
-      font-family: "Poppins", sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* Header */
-    .header {
-      background-color: #000000;
-      color: #fff;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .header .flex {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .header .logo {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .header .search-form {
-      display: flex;
-      align-items: center;
-      background-color: #fff;
-      border-radius: 5px;
-      overflow: hidden;
-      width: 300px;
-    }
-
-    .header .search-form input {
-      flex: 1;
-      padding: 0.5rem 1rem;
-      border: none;
-      outline: none;
-    }
-
-    .header .search-form button {
-      background-color: #3498db;
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .header .search-form button:hover {
-      background-color: black;
-    }
-
-    .header .icons {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .header .icons div {
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-
-    .header .icons div:hover {
-      color: #ba34db;
-    }
-
-    .header .profile {
-      position: absolute;
-      top: 4rem;
-      right: 2rem;
-      background-color: #fff;
-      padding: 1rem;
-      border-radius: 5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      display: none;
-    }
-
-    .header .profile.active {
-      display: block;
-    }
-
-    .header .profile img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin-bottom: 0.5rem;
-    }
-
-    .header .profile .name {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-
-    .header .profile .role {
-      font-size: 0.9rem;
-      color: #777;
-    }
-
-    .header .profile .btn {
-      display: block;
-      background-color: #000000;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      text-align: center;
-      margin-top: 0.5rem;
-      transition: background-color 0.3s ease;
-    }
-    .header .profile .btn:hover {
-      background-color: black;
-    }
-    .side-bar {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background-color: #070707;
-      color: #fff;
-      transition: left 0.3s ease;
-      z-index: 1000;
-    }
-    .side-bar.active {
-      left: 0;
-    }
-    .side-bar .profile {
-      padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid #000000;
-    }
-    .side-bar .profile .name {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    .side-bar .profile .role {
-      font-size: 0.9rem;
-    }
-    .side-bar .navbar {
-      padding: 1rem;
-    }
-    .side-bar .navbar a {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      transition: background-color 0.3s ease;
-      padding: 30px;
-    }
-    .side-bar .navbar a:hover {
-      background-color: #a12d95;
-      color: #fff;
-    }
-    .side-bar .navbar a i {
-      font-size: 1.2rem;
-    }
-    .courses {
-      padding: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .courses .heading {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .courses .filters {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .courses .filters select {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      outline: none;
-      cursor: pointer;
-    }
-    .courses .box-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-    .courses .box {
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      transition: transform 0.3s ease;
-    }
-    .courses .box:hover {
-      transform: translateY(-5px);
-    }
-    .courses .box .tutor {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-    }
-    .courses .box .tutor img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-    }
-    .courses .box .thumb img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-    .courses .box .thumb span {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      padding: 0.2rem 0.5rem;
-      border-radius: 3px;
-      font-size: 0.8rem;
-    }
-    .courses .box .title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      padding: 0 1rem;
-      margin: 0.5rem 0;
-    }
-    .courses .box p {
-      font-size: 0.9rem;
-      color: #777;
-      padding: 0 1rem;
-      margin-bottom: 1rem;
-    }
-    .courses .box .inline-btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      background-color: #3498db;
-      color: #fff;
-      padding: 0.5rem;
-      border-radius: 5px;
-      margin: 0.5rem 0;
-      transition: background-color 0.3s ease;
-    }
-    .courses .box .inline-btn:hover {
-      background-color: #2980b9;
-    }
-    .footer {
-      background-color: #000000;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-    }
-    .footer span {
-      color: #3498db;
-    }
-  </style>
   <body>
     <header class="header">
       <section class="flex">
@@ -329,45 +238,49 @@
     <section class="courses">
       <h1 class="heading">Our Courses</h1>
       <div class="filters">
-        <select id="category-filter">
-          <option value="">All Categories</option>
-          <option value="HTML">HTML</option>
-          <option value="CSS">CSS</option>
-          <option value="JavaScript">JavaScript</option>
-          <option value="Bootstrap">Bootstrap</option>
-          <option value="JQuery">JQuery</option>
-          <option value="SASS">SASS</option>
-        </select>
-        <select id="price-filter">
-          <option value="">All Prices</option>
-          <option value="free">Free</option>
-          <option value="paid">Paid</option>
+        <input type="text" id="search" placeholder="Search courses..." />
+        <select id="filter">
+          <option value="all">All categories</option>
+          <option value="web">web</option>
+          <option value="programming">programming</option>
+          <option value="design">design</option>
         </select>
       </div>
-      <div class="box-container"></div>
-      <div class="more-btn">
-        <a href="courses.html" class="inline-option-btn">View All Courses</a>
-      </div>
-    </section>
-    <footer class="footer">
-      &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
+      <div id="course-list" class="course-list"></div>
+    </div>
+    <footer>
+      <p>&copy; 2023 maged. All rights reserved.</p>
     </footer>
     <script>
-      let courses = JSON.parse(localStorage.getItem("courses")) || [];
-      if (!localStorage.getItem("courses")) {
-        localStorage.setItem("courses", JSON.stringify(courses));
-      }
-
-      const currentUser = {
-        username: "",
-      };
-
-      // Initialize enrolled courses for the user if not already stored
-      if (!localStorage.getItem(`enrolledCourses_${currentUser.username}`)) {
-        localStorage.setItem(
-          `enrolledCourses_${currentUser.username}`,
-          JSON.stringify([])
-        );
+      const courses = [
+        { id: 1, title: "HTML", categories: "web" },
+        { id: 2, title: "CSS", categories: "design" },
+        { id: 3, title: "JavaScript", categories: "programming" },
+        { id: 4, title: "Java", categories: "programming" },
+      ];
+      const courseList = document.getElementById("course-list");
+      const searchInput = document.getElementById("search");
+      const filterSelect = document.getElementById("filter");
+      function displayCourses() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filterLevel = filterSelect.value;
+        courseList.innerHTML = "";
+        courses.forEach((course) => {
+          const matchesSearch = course.title.toLowerCase().includes(searchTerm);
+          const matchesFilter =
+            filterLevel === "all" || course.categories === filterLevel;
+          if (matchesSearch && matchesFilter) {
+            const courseCard = document.createElement("div");
+            courseCard.className = "course-card";
+            courseCard.innerHTML = `
+              <h3>${course.title}</h3>
+              <p>category: ${course.categories}</p>
+              <button onclick="addToWishlist(${course.id})">Add to Wishlist</button>
+              <button onclick="enrollInCourse(${course.id})">Enroll</button>
+            `;
+            courseList.appendChild(courseCard);
+          }
+        });
       }
       // Function to enroll in a course
       function enrollInCourse(courseId) {
