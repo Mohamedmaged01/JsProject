@@ -5,6 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel</title>
     <link rel="stylesheet" href="../styles/Admin.css" />
+    <style>
+      /* Optional inline CSS for quick testing */
+      .admin-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem;
+      }
+      .admin-options {
+        margin-bottom: 1rem;
+      }
+      .admin-options button {
+        margin-right: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      .management-section {
+        display: none;
+        margin-bottom: 2rem;
+      }
+      .management-section.active {
+        display: block;
+      }
+      form input,
+      form textarea,
+      form select {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+      }
+      form button {
+        padding: 0.5rem 1rem;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      ul li {
+        background: #f4f4f4;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 0.5rem;
+        text-align: left;
+      }
+    </style>
   </head>
   <body>
     <div class="admin-container">
@@ -18,24 +74,53 @@
       </div>
 
       <!-- Course Management Section -->
-      <div id="courseManagement" class="management-section">
+      <div id="courseManagement" class="management-section active">
         <h2>Manage Courses</h2>
         <form id="courseForm">
           <input
             type="text"
-            id="courseName"
-            placeholder="Course Name"
+            id="courseTitle"
+            placeholder="Course Title"
             required
           />
           <input
             type="text"
-            id="courseDescription"
-            placeholder="Description"
+            id="courseImage"
+            placeholder="Image URL"
             required
           />
           <select id="courseCategory" required>
-            <!-- Categories will be populated dynamically -->
+            <!-- Options will be populated dynamically -->
           </select>
+          <input
+            type="text"
+            id="courseInstructor"
+            placeholder="Instructor Name"
+            required
+          />
+          <textarea
+            id="courseDescription"
+            placeholder="Course Description"
+            required
+          ></textarea>
+          <input
+            type="text"
+            id="coursePrice"
+            placeholder="Price (enter 'free' or a numeric value)"
+            required
+          />
+          <input
+            type="text"
+            id="courseDuration"
+            placeholder="Duration (e.g., 10 hours)"
+            required
+          />
+          <input
+            type="url"
+            id="courseContent"
+            placeholder="Content Link (Videos, PDFs, etc.)"
+            required
+          />
           <button type="submit">Add Course</button>
         </form>
         <ul id="courseList">
@@ -97,7 +182,9 @@
     </div>
 
     <script>
-      // Helper functions for local storage
+      // ===============================
+      // Helper Functions for Local Storage
+      // ===============================
       const getData = (key) => {
         const data = localStorage.getItem(key);
         return data ? JSON.parse(data) : [];
@@ -107,7 +194,9 @@
         localStorage.setItem(key, JSON.stringify(data));
       };
 
-      // Initialize local storage with default data if empty
+      // ===============================
+      // Initialization
+      // ===============================
       const initializeLocalStorage = () => {
         if (!localStorage.getItem("courses")) saveData("courses", []);
         if (!localStorage.getItem("categories")) saveData("categories", []);
@@ -118,134 +207,396 @@
 
       initializeLocalStorage();
 
-      // Render Courses
+      // ===============================
+      // Rendering Functions
+      // ===============================
       const renderCourses = () => {
         const courses = getData("courses");
         const courseList = document.getElementById("courseList");
         courseList.innerHTML = courses
           .map(
             (course) => `
-        <li>
-          ${course.name} - ${course.description}
-          <button onclick="deleteCourse(${course.id})">Delete</button>
-        </li>
-      `
+          <li>
+            <strong>${course.title}</strong> by ${course.instructor} - ${course.description}
+            <br>
+            Price: ${course.price} | Duration: ${course.duration} | Content: <a href="${course.content}" target="_blank">${course.content}</a>
+            <br>
+            <button onclick="deleteCourse(${course.id})">Delete</button>
+          </li>
+        `
           )
           .join("");
       };
 
-      // Render Categories (for management display)
       const renderCategories = () => {
         const categories = getData("categories");
         const categoryList = document.getElementById("categoryList");
         categoryList.innerHTML = categories
           .map(
             (category) => `
-        <li>
-          ${category.name}
-          <button onclick="deleteCategory(${category.id})">Delete</button>
-        </li>
-      `
+          <li>
+            ${category.name}
+            <button onclick="deleteCategory(${category.id})">Delete</button>
+          </li>
+        `
           )
           .join("");
-        // Also update the course category <select> options.
         populateCourseCategorySelect();
       };
 
-      // Populate the course category <select> element
       const populateCourseCategorySelect = () => {
         const categories = getData("categories");
         const courseCategorySelect = document.getElementById("courseCategory");
-        let optionsHTML = "";
-        // You could add a default "Select Category" option if desired.
+        let optionsHTML = `<option value="">Select Category</option>`;
         categories.forEach((category) => {
           optionsHTML += `<option value="${category.id}">${category.name}</option>`;
         });
         courseCategorySelect.innerHTML = optionsHTML;
       };
 
-      // Render Students
       const renderStudents = () => {
         const students = getData("students");
-        const studentTable = document
+        const studentTableBody = document
           .getElementById("studentTable")
           .querySelector("tbody");
-        studentTable.innerHTML = students
+        studentTableBody.innerHTML = students
           .map(
             (student) => `
-        <tr>
-          <td>${student.name}</td>
-          <td>${student.email}</td>
-          <td>${student.progress ? student.progress.length : 0} courses</td>
-        </tr>
-      `
+          <tr>
+            <td>${student.name}</td>
+            <td>${student.email}</td>
+            <td>${student.progress ? student.progress.length : 0} courses</td>
+          </tr>
+        `
           )
           .join("");
       };
 
-      // Render Registrations
       const renderRegistrations = () => {
         const registrations = getData("registrations");
-        const registrationTable = document
+        const registrationTableBody = document
           .getElementById("registrationTable")
           .querySelector("tbody");
-        registrationTable.innerHTML = registrations
+        registrationTableBody.innerHTML = registrations
           .map(
             (registration) => `
-        <tr>
-          <td>${registration.studentId}</td>
-          <td>${registration.courseId}</td>
-          <td>${registration.status}</td>
-          <td>
-            <button onclick="approveRegistration(${registration.id})">Approve</button>
-            <button onclick="rejectRegistration(${registration.id})">Reject</button>
-          </td>
-        </tr>
-      `
+          <tr>
+            <td>${registration.studentId}</td>
+            <td>${registration.courseId}</td>
+            <td>${registration.status}</td>
+            <td>
+              <button onclick="approveRegistration(${registration.id})">Approve</button>
+              <button onclick="rejectRegistration(${registration.id})">Reject</button>
+            </td>
+          </tr>
+        `
           )
           .join("");
       };
 
-      // Add Course
+      // ===============================
+      // Delete Functions
+      // ===============================
+      function deleteCourse(courseId) {
+        let courses = getData("courses");
+        courses = courses.filter((course) => course.id !== courseId);
+        saveData("courses", courses);
+        renderCourses();
+      }
+
+      function deleteCategory(categoryId) {
+        let categories = getData("categories");
+        categories = categories.filter(
+          (category) => category.id !== categoryId
+        );
+        saveData("categories", categories);
+        renderCategories();
+      }
+
+      // ===============================
+      // Add Course & Category with Validation
+      // ===============================
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
+        const title = document.getElementById("courseTitle").value.trim();
+        const image = document.getElementById("courseImage").value.trim();
+        const categoryId = document.getElementById("courseCategory").value;
+        const instructor = document
+          .getElementById("courseInstructor")
+          .value.trim();
+        const description = document
+          .getElementById("courseDescription")
+          .value.trim();
+        const price = document.getElementById("coursePrice").value.trim();
+        const duration = document.getElementById("courseDuration").value.trim();
+        const content = document.getElementById("courseContent").value.trim();
+
+        if (
+          !title ||
+          !image ||
+          !categoryId ||
+          !instructor ||
+          !description ||
+          !price ||
+          !duration ||
+          !content
+        ) {
+          alert("All fields are required.");
+          return;
+        }
+
+        let finalPrice;
+        if (price.toLowerCase() === "free") {
+          finalPrice = "free";
+        } else {
+          const numericPrice = Number(price);
+          if (isNaN(numericPrice) || numericPrice <= 0) {
+            alert(
+              "Invalid price value. Please enter 'free' or a positive number."
+            );
+            return;
+          }
+          finalPrice = numericPrice;
+        }
+
+        let courses = getData("courses");
+        const duplicate = courses.some(
+          (course) => course.title.toLowerCase() === title.toLowerCase()
+        );
+        if (duplicate) {
+          alert("A course with this title already exists.");
+          return;
+        }
+
         let randid = Math.floor(Math.random() * 10000);
         const course = {
           id: randid,
-          name: document.getElementById("courseName").value,
-          description: document.getElementById("courseDescription").value,
-          categoryId: document.getElementById("courseCategory").value,
+          title: title,
+          image: image,
+          categoryId: categoryId,
+          instructor: instructor,
+          description: description,
+          price: finalPrice,
+          duration: duration,
+          content: content,
         };
-        const courses = getData("courses");
+
         courses.push(course);
         saveData("courses", courses);
         renderCourses();
       });
 
-      // Add Category
       document
         .getElementById("categoryForm")
         .addEventListener("submit", (e) => {
           e.preventDefault();
+          const categoryName = document
+            .getElementById("categoryName")
+            .value.trim();
+          if (!categoryName) {
+            alert("Category name cannot be empty.");
+            return;
+          }
+          let categories = getData("categories");
+          const duplicate = categories.some(
+            (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+          );
+          if (duplicate) {
+            alert("This category already exists.");
+            return;
+          }
           let randid = Math.floor(Math.random() * 10000);
           const category = {
             id: randid,
-            name: document.getElementById("categoryName").value,
+            name: categoryName,
           };
-          const categories = getData("categories");
           categories.push(category);
           saveData("categories", categories);
           renderCategories();
         });
 
+      // ===============================
+      // Enrollment Request Functions (User Side)
+      // ===============================
+      function requestRegistration(courseId) {
+        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!loggedInUser) {
+          alert("Please login first to enroll in courses.");
+          return;
+        }
+        let registrations = getData("registrations");
+        const existingRequest = registrations.find(
+          (r) =>
+            r.courseId === courseId &&
+            r.studentId === loggedInUser.email &&
+            (r.status === "pending" || r.status === "approved")
+        );
+        if (existingRequest) {
+          alert(
+            existingRequest.status === "pending"
+              ? "Your registration request for this course is already pending."
+              : "You are already enrolled in this course."
+          );
+          return;
+        }
+        const regId = Math.floor(Math.random() * 10000);
+        const registration = {
+          id: regId,
+          studentId: loggedInUser.email,
+          courseId: courseId,
+          status: "pending",
+        };
+        registrations.push(registration);
+        saveData("registrations", registrations);
+        alert(
+          "Registration request submitted. Your request is now pending approval."
+        );
+        renderCourses();
+      }
+
+      // ===============================
+      // Admin Registration Handling Functions
+      // ===============================
+      function approveRegistration(registrationId) {
+        let registrations = getData("registrations");
+        const regIndex = registrations.findIndex(
+          (r) => r.id === registrationId
+        );
+        if (regIndex === -1) {
+          alert("Registration not found.");
+          return;
+        }
+        registrations[regIndex].status = "approved";
+        saveData("registrations", registrations);
+
+        // Add course to student's enrolled courses if not already present.
+        const studentId = registrations[regIndex].studentId;
+        const courseId = registrations[regIndex].courseId;
+        const courses = getData("courses");
+        const courseToEnroll = courses.find((c) => c.id === courseId);
+        if (!courseToEnroll) {
+          alert("Course not found.");
+          return;
+        }
+        const enrolledKey = "enrolledCourses_" + studentId;
+        let enrolledCourses = getData(enrolledKey);
+        if (!enrolledCourses.some((c) => c.id === courseId)) {
+          enrolledCourses.push(courseToEnroll);
+          saveData(enrolledKey, enrolledCourses);
+        }
+        alert("Registration approved and course added to enrolled courses.");
+        renderRegistrations();
+      }
+
+      function rejectRegistration(registrationId) {
+        let registrations = getData("registrations");
+        const regIndex = registrations.findIndex(
+          (r) => r.id === registrationId
+        );
+        if (regIndex === -1) {
+          alert("Registration not found.");
+          return;
+        }
+        registrations[regIndex].status = "rejected";
+        saveData("registrations", registrations);
+        alert("Registration rejected.");
+        renderRegistrations();
+      }
+
+      // ===============================
+      // View Management Functions
+      // ===============================
+      function manageCourses() {
+        document.getElementById("courseManagement").style.display = "block";
+        document.getElementById("categoryManagement").style.display = "none";
+        document.getElementById("studentManagement").style.display = "none";
+        document.getElementById("registrationManagement").style.display =
+          "none";
+      }
+      function manageCategories() {
+        document.getElementById("courseManagement").style.display = "none";
+        document.getElementById("categoryManagement").style.display = "block";
+        document.getElementById("studentManagement").style.display = "none";
+        document.getElementById("registrationManagement").style.display =
+          "none";
+      }
+      function manageStudents() {
+        document.getElementById("courseManagement").style.display = "none";
+        document.getElementById("categoryManagement").style.display = "none";
+        document.getElementById("studentManagement").style.display = "block";
+        document.getElementById("registrationManagement").style.display =
+          "none";
+      }
+      function manageRegistrations() {
+        document.getElementById("courseManagement").style.display = "none";
+        document.getElementById("categoryManagement").style.display = "none";
+        document.getElementById("studentManagement").style.display = "none";
+        document.getElementById("registrationManagement").style.display =
+          "block";
+        renderRegistrations(); // refresh registrations when viewing them
+      }
+
+      // ===============================
+      // Logout Function
+      // ===============================
       const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("loggedInUser");
         window.location.href = "Login.html";
       };
 
-      // Initial rendering calls
-      renderCourses();
+      // ===============================
+      // Filtering Courses (if needed)
+      // ===============================
+      function filterAndDisplayCourses() {
+        let courses = getData("courses");
+        const searchQuery = document
+          .getElementById("search-box")
+          .value.trim()
+          .toLowerCase();
+        const selectedCategory =
+          document.getElementById("category-filter").value;
+        const selectedPrice = document.getElementById("price-filter").value;
+        let filteredCourses = courses;
+        if (searchQuery !== "") {
+          filteredCourses = filteredCourses.filter(
+            (course) =>
+              course.title.toLowerCase().includes(searchQuery) ||
+              course.description.toLowerCase().includes(searchQuery) ||
+              (course.tutor && course.tutor.toLowerCase().includes(searchQuery))
+          );
+        }
+        if (selectedCategory !== "") {
+          filteredCourses = filteredCourses.filter(
+            (course) => course.categoryId == selectedCategory
+          );
+        }
+        if (selectedPrice !== "") {
+          filteredCourses = filteredCourses.filter(
+            (course) => course.price === selectedPrice
+          );
+        }
+        displayCourses(filteredCourses);
+      }
+
+      document
+        .getElementById("search-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          filterAndDisplayCourses();
+        });
+      document
+        .getElementById("category-filter")
+        .addEventListener("change", filterAndDisplayCourses);
+      document
+        .getElementById("price-filter")
+        .addEventListener("change", filterAndDisplayCourses);
+
+      // ===============================
+      // Initial Rendering Calls
+      // ===============================
+      const courses = initCourses();
+      displayCourses(courses);
       renderCategories();
       renderStudents();
       renderRegistrations();
