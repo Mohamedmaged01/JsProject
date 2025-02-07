@@ -4,16 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-    <!-- Font Awesome CSS -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
-    <!-- Your custom CSS -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- HEADER -->
     <header class="header">
       <section class="flex">
         <a href="home.html" class="logo" style="color: white">3lmny</a>
@@ -35,8 +32,6 @@
         <div class="profile"></div>
       </section>
     </header>
-
-    <!-- SIDE BAR -->
     <div class="side-bar">
       <nav class="navbar">
         <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
@@ -54,12 +49,9 @@
         >
       </nav>
     </div>
-
-    <!-- COURSES SECTION -->
     <section class="courses">
       <h1 class="heading">Our Courses</h1>
       <div class="filters">
-        <!-- Category filter will be populated dynamically -->
         <select id="category-filter">
           <option value="">All Categories</option>
         </select>
@@ -71,17 +63,12 @@
       </div>
       <div class="box-container"></div>
     </section>
-
-    <!-- FOOTER -->
     <footer class="footer">
       &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
     </footer>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // ===============================
-        // Local Storage Helper Functions
-        // ===============================
         const getData = (key) => {
           const data = localStorage.getItem(key);
           return data ? JSON.parse(data) : [];
@@ -90,10 +77,6 @@
         const saveData = (key, data) => {
           localStorage.setItem(key, JSON.stringify(data));
         };
-
-        // ===============================
-        // Initialization
-        // ===============================
         const initializeLocalStorage = () => {
           if (!localStorage.getItem("courses")) saveData("courses", []);
           if (!localStorage.getItem("categories")) saveData("categories", []);
@@ -102,10 +85,6 @@
             saveData("registrations", []);
         };
         initializeLocalStorage();
-
-        // ===============================
-        // Profile & User Initialization
-        // ===============================
         let loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         const profileDiv = document.querySelector(".profile");
 
@@ -130,20 +109,15 @@
             `;
           }
         }
-
         function logoutFunction() {
           localStorage.removeItem("loggedInUser");
           alert("Logged out successfully!");
           window.location.href = "first.html";
         }
-
         renderProfile();
-
         document.getElementById("user-btn").addEventListener("click", () => {
           profileDiv.classList.toggle("active");
         });
-
-        // Initialize enrolled and wishlist arrays for logged-in user (using email as identifier)
         if (loggedInUser) {
           if (!localStorage.getItem(`enrolledCourses_${loggedInUser.email}`)) {
             saveData(`enrolledCourses_${loggedInUser.email}`, []);
@@ -152,15 +126,9 @@
             saveData(`wishlistCourses_${loggedInUser.email}`, []);
           }
         }
-
-        // ===============================
-        // Categories Initialization & Rendering
-        // ===============================
         function initCategories() {
           return getData("categories");
         }
-
-        // Populate the category filter <select>
         function renderCategoryOptions() {
           const categorySelect = document.getElementById("category-filter");
           categorySelect.innerHTML = '<option value="">All Categories</option>';
@@ -173,17 +141,9 @@
           });
         }
         renderCategoryOptions();
-
-        // ===============================
-        // Courses Initialization
-        // ===============================
         function initCourses() {
           return getData("courses");
         }
-
-        // ===============================
-        // Display & Filtering Courses
-        // ===============================
         function displayCourses(courses) {
           const container = document.querySelector(".box-container");
           container.innerHTML = "";
@@ -191,13 +151,10 @@
             container.innerHTML = '<p class="no-results">No courses found.</p>';
             return;
           }
-          // Get registration requests for the logged-in user
           const registrations = getData("registrations");
           courses.forEach((course) => {
             const box = document.createElement("div");
             box.className = "box";
-
-            // Determine button text and disabled state based on registration request
             let buttonText = "Enroll";
             let disabled = false;
             if (loggedInUser) {
@@ -215,7 +172,6 @@
                 }
               }
             }
-
             box.innerHTML = `
               <div class="course-header">
                 <img src="${
@@ -239,16 +195,13 @@
                 <!-- Additional buttons (e.g., wishlist) can go here -->
               </div>
             `;
-
             const enrollButton = box.querySelector(".enroll-btn");
             enrollButton.addEventListener("click", () => {
               requestRegistration(course.id);
             });
-
             container.appendChild(box);
           });
         }
-
         function filterAndDisplayCourses() {
           let courses = getData("courses");
           const searchQuery = document
@@ -280,7 +233,6 @@
           }
           displayCourses(filteredCourses);
         }
-
         document
           .getElementById("search-form")
           .addEventListener("submit", function (e) {
@@ -293,10 +245,6 @@
         document
           .getElementById("price-filter")
           .addEventListener("change", filterAndDisplayCourses);
-
-        // ===============================
-        // Enrollment Request Function
-        // ===============================
         function requestRegistration(courseId) {
           const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
           if (!loggedInUser) {
@@ -332,10 +280,6 @@
           );
           displayCourses(getData("courses"));
         }
-
-        // ===============================
-        // On Page Load: Display Courses
-        // ===============================
         let courses = initCourses();
         displayCourses(courses);
       });
