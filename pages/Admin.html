@@ -10,6 +10,10 @@
     <div class="admin-container">
       <h1>Admin Dashboard</h1>
       <div class="admin-options">
+        <button onclick="manageCourses()">Manage Courses</button>
+        <button onclick="manageCategories()">Manage Categories</button>
+        <button onclick="manageStudents()">Manage Students</button>
+        <button onclick="manageRegistrations()">Manage Registrations</button>
         <button onclick="logout()">Logout</button>
       </div>
 
@@ -19,48 +23,19 @@
         <form id="courseForm">
           <input
             type="text"
-            id="courseTitle"
-            placeholder="Course Title"
+            id="courseName"
+            placeholder="Course Name"
             required
           />
           <input
             type="text"
-            id="courseImage"
-            placeholder="Image URL"
+            id="courseDescription"
+            placeholder="Description"
             required
           />
           <select id="courseCategory" required>
             <!-- Categories will be populated dynamically -->
           </select>
-          <input
-            type="text"
-            id="courseInstructor"
-            placeholder="Instructor Name"
-            required
-          />
-          <textarea
-            id="courseDescription"
-            placeholder="Course Description"
-            required
-          ></textarea>
-          <input
-            type="text"
-            id="coursePrice"
-            placeholder="Price (enter 'free' or a numeric value)"
-            required
-          />
-          <input
-            type="text"
-            id="courseDuration"
-            placeholder="Duration (e.g., 10 hours)"
-            required
-          />
-          <input
-            type="url"
-            id="courseContent"
-            placeholder="Content Link (Videos, PDFs, etc.)"
-            required
-          />
           <button type="submit">Add Course</button>
         </form>
         <ul id="courseList">
@@ -150,14 +125,11 @@
         courseList.innerHTML = courses
           .map(
             (course) => `
-          <li>
-            <strong>${course.title}</strong> by ${course.instructor} - ${course.description}
-            <br>
-            Price: ${course.price} | Duration: ${course.duration} | Content: <a href="${course.content}" target="_blank">${course.content}</a>
-            <br>
-            <button onclick="deleteCourse(${course.id})">Delete</button>
-          </li>
-        `
+        <li>
+          ${course.name} - ${course.description}
+          <button onclick="deleteCourse(${course.id})">Delete</button>
+        </li>
+      `
           )
           .join("");
       };
@@ -169,22 +141,23 @@
         categoryList.innerHTML = categories
           .map(
             (category) => `
-          <li>
-            ${category.name}
-            <button onclick="deleteCategory(${category.id})">Delete</button>
-          </li>
-        `
+        <li>
+          ${category.name}
+          <button onclick="deleteCategory(${category.id})">Delete</button>
+        </li>
+      `
           )
           .join("");
-        // Update the course category <select> options.
+        // Also update the course category <select> options.
         populateCourseCategorySelect();
       };
 
-      // Populate the course category <select> element dynamically
+      // Populate the course category <select> element
       const populateCourseCategorySelect = () => {
         const categories = getData("categories");
         const courseCategorySelect = document.getElementById("courseCategory");
-        let optionsHTML = `<option value="">Select Category</option>`;
+        let optionsHTML = "";
+        // You could add a default "Select Category" option if desired.
         categories.forEach((category) => {
           optionsHTML += `<option value="${category.id}">${category.name}</option>`;
         });
@@ -200,12 +173,12 @@
         studentTable.innerHTML = students
           .map(
             (student) => `
-          <tr>
-            <td>${student.name}</td>
-            <td>${student.email}</td>
-            <td>${student.progress ? student.progress.length : 0} courses</td>
-          </tr>
-        `
+        <tr>
+          <td>${student.name}</td>
+          <td>${student.email}</td>
+          <td>${student.progress ? student.progress.length : 0} courses</td>
+        </tr>
+      `
           )
           .join("");
       };
@@ -219,123 +192,47 @@
         registrationTable.innerHTML = registrations
           .map(
             (registration) => `
-          <tr>
-            <td>${registration.studentId}</td>
-            <td>${registration.courseId}</td>
-            <td>${registration.status}</td>
-            <td>
-              <button onclick="approveRegistration(${registration.id})">Approve</button>
-              <button onclick="rejectRegistration(${registration.id})">Reject</button>
-            </td>
-          </tr>
-        `
+        <tr>
+          <td>${registration.studentId}</td>
+          <td>${registration.courseId}</td>
+          <td>${registration.status}</td>
+          <td>
+            <button onclick="approveRegistration(${registration.id})">Approve</button>
+            <button onclick="rejectRegistration(${registration.id})">Reject</button>
+          </td>
+        </tr>
+      `
           )
           .join("");
       };
 
-      // Add Course with Validation
+      // Add Course
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
-
-        // Retrieve and trim values from form fields.
-        const title = document.getElementById("courseTitle").value.trim();
-        const image = document.getElementById("courseImage").value.trim();
-        const categoryId = document.getElementById("courseCategory").value;
-        const instructor = document
-          .getElementById("courseInstructor")
-          .value.trim();
-        const description = document
-          .getElementById("courseDescription")
-          .value.trim();
-        const price = document.getElementById("coursePrice").value.trim();
-        const duration = document.getElementById("courseDuration").value.trim();
-        const content = document.getElementById("courseContent").value.trim();
-
-        // Basic validation: All fields must be provided.
-        if (
-          !title ||
-          !image ||
-          !categoryId ||
-          !instructor ||
-          !description ||
-          !price ||
-          !duration ||
-          !content
-        ) {
-          alert("All fields are required.");
-          return;
-        }
-
-        // Validate Price: Must be either "free" (case-insensitive) or a valid positive number.
-        let finalPrice;
-        if (price.toLowerCase() === "free") {
-          finalPrice = "free";
-        } else {
-          const numericPrice = Number(price);
-          if (isNaN(numericPrice) || numericPrice <= 0) {
-            alert(
-              "Invalid price value. Please enter 'free' or a positive number."
-            );
-            return;
-          }
-          finalPrice = numericPrice;
-        }
-
-        // Check if a course with the same title already exists (case-insensitive).
-        let courses = getData("courses");
-        const duplicate = courses.some(
-          (course) => course.title.toLowerCase() === title.toLowerCase()
-        );
-        if (duplicate) {
-          alert("A course with this title already exists.");
-          return;
-        }
-
-        // Generate a random ID.
         let randid = Math.floor(Math.random() * 10000);
         const course = {
           id: randid,
-          title: title,
-          image: image,
-          categoryId: categoryId,
-          instructor: instructor,
-          description: description,
-          price: finalPrice,
-          duration: duration,
-          content: content, // Should be a valid URL
+          name: document.getElementById("courseName").value,
+          description: document.getElementById("courseDescription").value,
+          categoryId: document.getElementById("courseCategory").value,
         };
-
+        const courses = getData("courses");
         courses.push(course);
         saveData("courses", courses);
         renderCourses();
       });
 
-      // Add Category with Validation
+      // Add Category
       document
         .getElementById("categoryForm")
         .addEventListener("submit", (e) => {
           e.preventDefault();
-          const categoryName = document
-            .getElementById("categoryName")
-            .value.trim();
-          if (!categoryName) {
-            alert("Category name cannot be empty.");
-            return;
-          }
-          let categories = getData("categories");
-          // Check for duplicate category names (case-insensitive)
-          const duplicate = categories.some(
-            (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
-          );
-          if (duplicate) {
-            alert("This category already exists.");
-            return;
-          }
           let randid = Math.floor(Math.random() * 10000);
           const category = {
             id: randid,
-            name: categoryName,
+            name: document.getElementById("categoryName").value,
           };
+          const categories = getData("categories");
           categories.push(category);
           saveData("categories", categories);
           renderCategories();

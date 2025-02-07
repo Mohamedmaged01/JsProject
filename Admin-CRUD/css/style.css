@@ -1,0 +1,251 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+   
+    color: black;
+    display: flex;
+    background-color: white;
+    height: 100vh;
+}
+
+.side-bar {
+    width: 250px;
+    background: black;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+}
+
+.profile {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.profile img {
+    width: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile .name {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.profile .btn{
+    background-color: white;
+    border: 2px solid #2a5298;
+    color: #2a5298;
+}
+
+.profile .btn:hover{
+    background-color: #2a5298;
+    color: white;
+    transform: scale(1.09);
+}
+
+.navbar{
+    margin-top: 50px;
+  
+}
+.navbar ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+.navbar ul li{
+    margin: 15px 0;
+}
+
+.navbar ul li i{
+    padding-left: 5px;
+}
+.navbar ul li a{
+    color: white;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    background-color: black;
+    border-radius: 5px;
+
+}
+
+.navbar ul li a:hover{
+    background-color: #555;
+    transform: scale(1.2);
+    transition: 0.2s;
+}
+.navbar a {
+    display: flex;
+    align-items: left;
+    color: white;
+    text-decoration: none;
+    padding: 10px 0;
+}
+/*
+.navbar a i {
+    margin-right: 10px;
+}
+*/
+.dashboard {
+    margin-left: 270px;
+    padding: 20px;
+    width: calc(100% - 270px);
+}
+main{
+    height: 100vh;
+    background-color: white;
+}
+.search-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color:white;
+    padding: 20px;
+}
+
+.search-form {
+    display: flex;
+    background: white;
+    padding: 5px;
+    border-radius: 5px;
+    width: 80%;
+   
+}
+
+.search-form input {
+    border: 1px solid black;
+    padding: 10px;
+    outline: none;
+    flex: 1;
+    border-radius: 50px;
+
+}
+
+.search-form input:hover {
+    border: 2px solid #2a5298;
+    transform: scale(1.1);
+}
+
+.search-form button {
+    background: transparent;
+    border: none;
+}
+
+.search-buttons {
+    display: flex;
+    gap: 80px;
+    margin-top: 10px;
+}
+.search-buttons .btn:hover{
+    background-color: transparent;
+    color: #2a5298;
+    border: 2px solid #2a5298;
+    transform: scale(1.1);
+}
+.admin-dashboard {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.admin-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+.edit-course{
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+.edit-course h1{
+    text-align: center;
+}
+
+.edit-course form{
+    text-align: center;
+    width: 80%;
+    background-color: white;
+    margin: 0 auto;
+}
+
+.edit-course form .input{
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.edit-course form button{
+    
+    margin-bottom: 10px;
+}
+.admin-controls button {
+    width: 90%;
+    margin-bottom: 10px;
+}
+.admin-controls .design{
+    width: 90%;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.admin-controls .input{
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.admin-controls input, .edit-course form input{
+    height: 25px;
+}
+
+.admin-controls .input:hover{
+    transform: scale(1.009);
+}
+
+input[type="radio"] {
+    vertical-align: middle;
+    margin-right: 5px;
+ }
+ 
+
+.design .btn{
+    background-color: white;
+    border: 2px solid #2a5298;
+    color: #2a5298;
+    width: 10rem;
+    margin: 0 auto;
+}
+
+.design .btn:hover{
+    background-color: #2a5298;
+    color: white;
+    transform: scale(1.09);
+}
+
+.btn {
+    background: #2a5298;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+}
+.management-section{
+    padding-bottom: 100px;
+}
+.footer {
+    text-align: center;
+    padding: 10px;
+    background: black;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    color: white;
+}

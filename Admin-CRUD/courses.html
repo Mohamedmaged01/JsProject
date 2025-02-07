@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Course Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <aside class="side-bar">
+        <div class="profile">
+            <img src="images/Capture001.png" alt="Admin Photo">
+            <h3 class="name">Admin Name</h3>
+            <p class="role">Administrator</p>
+            <a href="profile.html" class="btn">View Profile</a>
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="courses.html"><i class="fas fa-home"> Home</i> </a></li>
+                <li><a href="students.htm"><i class="fas fa-user-graduate"> Students</i> </a></li>
+                <li><a href="requests.htm"><i class="fas fa-user-check"> Enroll Requests</i> </a></li>
+                <li><a href="Login.htm"><i class="fas fa-sign-out-alt"> Logout</i></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard">
+        <div class="search-section">
+            <form action="#" method="post" class="search-form">
+                <input type="text" name="search_box" id="search-box" required placeholder="Search courses..."
+                    maxlength="100">
+                <button class="fas fa-search"></button>
+            </form>
+            <div class="search-buttons">
+                <button class="btn">Search by Course</button>
+                <button class="btn">Search by Category</button>
+            </div>
+        </div>
+        <h1 class="admin-dashboard" style="color: black;">Admin Dashboard</h1>
+       
+        <section class="management-section courses">
+            
+            <div class="admin-controls add-category">
+
+                <button class="btn" id="add-category-btn"><i class="fas fa-plus"></i> Add Category</button>
+                
+                <div class="category-data design" id="add-category-form" class="hidden">
+                    <label for="category-title">Category Name:</label>
+                    <input type="text" id="category-title" placeholder="Enter Category Name" required class="input">
+                    <label for="category-image">Upload Category Image:</label>
+                    <input type="file" id="category-image" accept="image/*" class="input">
+                    <label for="category-description">Category Description:</label>
+                    <textarea name="categoryDescription" id="category-description" placeholder="Eneter Description hear" class="input" rows="4"></textarea>
+                    <button class="btn" id="submit-category">Add New Category</button>
+                </div>
+
+            </div>
+
+            <div class="boxContainer" id="category-container"></div>
+
+
+            <div class="admin-controls add-course">
+
+                <button class="btn" id="add-course-btn"><i class="fas fa-plus"></i> Add Course</button>
+
+                <div class="course-data design" id="add-course-form" class="hidden">
+                    <label for="course-title">Course Name:</label>
+                    <input type="text" id="course-title" placeholder="Enter Course Name" required class="input">
+                    <label for="course-Id">Course ID:</label>
+                    <input type="number" id="course-Id" placeholder="Enter course Id" required class="input">
+                    <label for="course-category">Select Category:</label>
+                    <select name="category" id="course-category" class="input">
+                        <option value="Web Development" class="input">Web Development</option>
+                        <option value="Graphic Design" class="input">Graphic Design</option>
+                        <option value="Marketing" class="input">Marketing</option>
+                    </select>
+                    <label for="instructor-name">Instructor Name:</label>
+                    <input type="text" id="instructor-name" placeholder="Enter instructor name.." required class="input">
+                    <label for="course-description">course Description:</label>
+                    <textarea name="courseDescription" id="course-description" placeholder="Eneter Description here" class="input" rows="4"></textarea>
+                    <label for="course-price">Price:</label>
+                    <input type="number" id="course-price" placeholder="Enter price (0 for free course)" required class="input">
+                    <label for="course-duration">Course Duration (hours):</label>
+                    <input type="number" name="Duration" id="course-duration" placeholder="Enter course duration" required class="input">
+                    <br><br>
+                    <label>Select Course Type:</label>
+                    <div class="course-type">
+                       <input type="radio" name="course-type" id="link-option" value="link" checked>
+                       <label for="link-option">Add Video Link</label>
+                       <input type="radio" name="course-type" id="file-option" value="file">
+                       <label for="file-option">Upload Video File</label>
+                    </div>
+                    <br>
+                    <label for="course-image">Upload Course Image:</label>
+                    <input type="file" id="course-image" accept="image/*">
+
+                    <input type="text" id="course-link" placeholder="Enter video link" class="input">
+
+                    <button class="btn" id="submit-course">Add New Course</button>
+                </div>
+                
+            </div>
+
+            <div class="box-container" id="course-container"></div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        &copy; 2025 by <span>Admin Panel</span> | All Rights Reserved!
+    </footer>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
