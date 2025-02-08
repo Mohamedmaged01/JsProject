@@ -5,50 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel</title>
     <link rel="stylesheet" href="../styles/Admin.css" />
+    <!-- Google Font: Poppins and Font Awesome -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    />
     <style>
-      /* Optional inline CSS for quick testing */
+      /* Global Styles */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      /* Header Styling */
+      .header {
+        background-color: #000;
+        color: #fff;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      .header .flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .header .logo {
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+      /* Admin Container */
       .admin-container {
         max-width: 1200px;
-        margin: auto;
-        padding: 1rem;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
+      /* Admin Options */
       .admin-options {
-        margin-bottom: 1rem;
-      }
-      .admin-options button {
-        margin-right: 1rem;
-        padding: 0.5rem 1rem;
-      }
-      .management-section {
-        display: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
         margin-bottom: 2rem;
       }
-      .management-section.active {
-        display: block;
+      .admin-options button {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      .admin-options button:hover {
+        background: #333;
+      }
+      /* Management Sections */
+      .management-section {
+        margin-bottom: 2rem;
+      }
+      .management-section h2 {
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
       }
       form input,
       form textarea,
       form select {
-        display: block;
         width: 100%;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
       form button {
-        padding: 0.5rem 1rem;
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s ease;
       }
+      form button:hover {
+        background: #333;
+      }
+      /* Course Cost Radio Group */
+      .course-cost-group {
+        margin-bottom: 1rem;
+      }
+      .course-cost-group label {
+        margin-right: 1.5rem;
+        font-weight: 500;
+      }
+      #paidPriceContainer {
+        margin-bottom: 1rem;
+      }
+      /* Lists and Tables */
       ul {
         list-style: none;
         padding: 0;
       }
       ul li {
-        background: #f4f4f4;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem;
+        background: #e9e9e9;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 4px;
       }
       table {
         width: 100%;
         border-collapse: collapse;
+        margin-bottom: 1rem;
       }
       table,
       th,
@@ -57,12 +141,20 @@
       }
       th,
       td {
-        padding: 0.5rem;
+        padding: 0.75rem;
         text-align: left;
       }
     </style>
   </head>
   <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="flex">
+        <a href="home.html" class="logo">3lmny</a>
+      </div>
+    </header>
+
+    <!-- Admin Container -->
     <div class="admin-container">
       <h1>Admin Dashboard</h1>
       <div class="admin-options">
@@ -73,6 +165,7 @@
         <button onclick="logout()">Logout</button>
       </div>
 
+      <!-- Course Management Section -->
       <div id="courseManagement" class="management-section active">
         <h2>Manage Courses</h2>
         <form id="courseForm">
@@ -88,7 +181,9 @@
             placeholder="Image URL"
             required
           />
-          <select id="courseCategory" required></select>
+          <select id="courseCategory" required>
+            <!-- Options will be populated dynamically -->
+          </select>
           <input
             type="text"
             id="courseInstructor"
@@ -100,12 +195,19 @@
             placeholder="Course Description"
             required
           ></textarea>
-          <input
-            type="text"
-            id="coursePrice"
-            placeholder="Price (enter 'free' or a numeric value)"
-            required
-          />
+          <!-- Course Cost Options -->
+          <div class="course-cost-group">
+            <label>
+              <input type="radio" name="courseCost" value="free" checked /> Free
+            </label>
+            <label>
+              <input type="radio" name="courseCost" value="paid" /> Paid
+            </label>
+          </div>
+          <!-- Paid Price Container -->
+          <div id="paidPriceContainer" style="display: none">
+            <input type="text" id="coursePaidPrice" placeholder="Enter Price" />
+          </div>
           <input
             type="text"
             id="courseDuration"
@@ -118,11 +220,17 @@
             placeholder="Content Link (Videos, PDFs, etc.)"
             required
           />
-          <button type="submit">Add Course</button>
+          <button type="submit" id="courseSubmitBtn">Add Course</button>
+          <button type="button" id="cancelEditBtn" style="display: none">
+            Cancel Edit
+          </button>
         </form>
-        <ul id="courseList"></ul>
+        <ul id="courseList">
+          <!-- Courses will be populated dynamically -->
+        </ul>
       </div>
 
+      <!-- Category Management Section -->
       <div id="categoryManagement" class="management-section">
         <h2>Manage Categories</h2>
         <form id="categoryForm">
@@ -134,9 +242,12 @@
           />
           <button type="submit">Add Category</button>
         </form>
-        <ul id="categoryList"></ul>
+        <ul id="categoryList">
+          <!-- Categories will be populated dynamically -->
+        </ul>
       </div>
 
+      <!-- Student Management Section -->
       <div id="studentManagement" class="management-section">
         <h2>Manage Students</h2>
         <table id="studentTable">
@@ -144,13 +255,16 @@
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Progress</th>
+              <th>Enrolled Courses</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <!-- Students and their progress will be populated dynamically -->
+          </tbody>
         </table>
       </div>
 
+      <!-- Registration Management Section -->
       <div id="registrationManagement" class="management-section">
         <h2>Manage Registrations</h2>
         <table id="registrationTable">
@@ -162,12 +276,17 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <!-- Registration requests will be populated dynamically -->
+          </tbody>
         </table>
       </div>
     </div>
 
     <script>
+      // ===============================
+      // Helper Functions for Local Storage
+      // ===============================
       const getData = (key) => {
         const data = localStorage.getItem(key);
         return data ? JSON.parse(data) : [];
@@ -177,6 +296,9 @@
         localStorage.setItem(key, JSON.stringify(data));
       };
 
+      // ===============================
+      // Initialization
+      // ===============================
       const initializeLocalStorage = () => {
         if (!localStorage.getItem("courses")) saveData("courses", []);
         if (!localStorage.getItem("categories")) saveData("categories", []);
@@ -187,6 +309,14 @@
 
       initializeLocalStorage();
 
+      // ===============================
+      // Global Variable for Editing
+      // ===============================
+      let editingCourseId = null;
+
+      // ===============================
+      // Rendering Functions
+      // ===============================
       const renderCourses = () => {
         const courses = getData("courses");
         const courseList = document.getElementById("courseList");
@@ -198,6 +328,7 @@
             <br>
             Price: ${course.price} | Duration: ${course.duration} | Content: <a href="${course.content}" target="_blank">${course.content}</a>
             <br>
+            <button onclick="editCourse(${course.id})">Edit</button>
             <button onclick="deleteCourse(${course.id})">Delete</button>
           </li>
         `
@@ -237,15 +368,20 @@
           .getElementById("studentTable")
           .querySelector("tbody");
         studentTableBody.innerHTML = students
-          .map(
-            (student) => `
+          .map((student) => {
+            const enrolledKey = "enrolledCourses_" + student.email;
+            const enrolledCourses = getData(enrolledKey);
+            const courseTitles = enrolledCourses.length
+              ? enrolledCourses.map((c) => c.title).join(", ")
+              : "No courses enrolled";
+            return `
           <tr>
             <td>${student.name}</td>
             <td>${student.email}</td>
-            <td>${student.progress ? student.progress.length : 0} courses</td>
+            <td>${courseTitles}</td>
           </tr>
-        `
-          )
+        `;
+          })
           .join("");
       };
 
@@ -271,23 +407,31 @@
           .join("");
       };
 
-      function deleteCourse(courseId) {
+      // ===============================
+      // Delete Functions
+      // ===============================
+      const deleteCourse = (courseId) => {
         let courses = getData("courses");
         courses = courses.filter((course) => course.id !== courseId);
         saveData("courses", courses);
         renderCourses();
-      }
+      };
 
-      function deleteCategory(categoryId) {
+      const deleteCategory = (categoryId) => {
         let categories = getData("categories");
         categories = categories.filter(
           (category) => category.id !== categoryId
         );
         saveData("categories", categories);
         renderCategories();
-      }
+      };
+
+      // ===============================
+      // Add/Edit Course & Category with Validation
+      // ===============================
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
+
         const title = document.getElementById("courseTitle").value.trim();
         const image = document.getElementById("courseImage").value.trim();
         const categoryId = document.getElementById("courseCategory").value;
@@ -297,7 +441,6 @@
         const description = document
           .getElementById("courseDescription")
           .value.trim();
-        const price = document.getElementById("coursePrice").value.trim();
         const duration = document.getElementById("courseDuration").value.trim();
         const content = document.getElementById("courseContent").value.trim();
 
@@ -307,7 +450,6 @@
           !categoryId ||
           !instructor ||
           !description ||
-          !price ||
           !duration ||
           !content
         ) {
@@ -315,14 +457,26 @@
           return;
         }
 
+        // Determine course cost from radio buttons.
+        const costRadios = document.querySelector(
+          'input[name="courseCost"]:checked'
+        );
+        const courseCost = costRadios.value; // "free" or "paid"
         let finalPrice;
-        if (price.toLowerCase() === "free") {
+        if (courseCost === "free") {
           finalPrice = "free";
         } else {
-          const numericPrice = Number(price);
+          const paidPriceValue = document
+            .getElementById("coursePaidPrice")
+            .value.trim();
+          if (!paidPriceValue) {
+            alert("Please enter a price for the paid course.");
+            return;
+          }
+          const numericPrice = Number(paidPriceValue);
           if (isNaN(numericPrice) || numericPrice <= 0) {
             alert(
-              "Invalid price value. Please enter 'free' or a positive number."
+              "Invalid price value. Please enter a positive number for the course price."
             );
             return;
           }
@@ -330,30 +484,59 @@
         }
 
         let courses = getData("courses");
-        const duplicate = courses.some(
-          (course) => course.title.toLowerCase() === title.toLowerCase()
-        );
-        if (duplicate) {
-          alert("A course with this title already exists.");
-          return;
+
+        if (editingCourseId !== null) {
+          const courseIndex = courses.findIndex(
+            (course) => course.id === editingCourseId
+          );
+          if (courseIndex === -1) {
+            alert("Course not found.");
+            return;
+          }
+          courses[courseIndex] = {
+            ...courses[courseIndex],
+            title,
+            image,
+            categoryId,
+            instructor,
+            description,
+            price: finalPrice,
+            duration,
+            content,
+          };
+          alert("Course updated successfully.");
+          editingCourseId = null;
+          document.getElementById("courseSubmitBtn").textContent = "Add Course";
+          document.getElementById("cancelEditBtn").style.display = "none";
+        } else {
+          const duplicate = courses.some(
+            (course) => course.title.toLowerCase() === title.toLowerCase()
+          );
+          if (duplicate) {
+            alert("A course with this title already exists.");
+            return;
+          }
+          const newCourse = {
+            id: Math.floor(Math.random() * 10000),
+            title,
+            image,
+            categoryId,
+            instructor,
+            description,
+            price: finalPrice,
+            duration,
+            content,
+          };
+          courses.push(newCourse);
+          alert("Course added successfully.");
         }
 
-        let randid = Math.floor(Math.random() * 10000);
-        const course = {
-          id: randid,
-          title: title,
-          image: image,
-          categoryId: categoryId,
-          instructor: instructor,
-          description: description,
-          price: finalPrice,
-          duration: duration,
-          content: content,
-        };
-
-        courses.push(course);
         saveData("courses", courses);
         renderCourses();
+        document.getElementById("courseForm").reset();
+        document.getElementById("courseSubmitBtn").textContent = "Add Course";
+        document.getElementById("cancelEditBtn").style.display = "none";
+        document.getElementById("paidPriceContainer").style.display = "none";
       });
 
       document
@@ -375,15 +558,39 @@
             alert("This category already exists.");
             return;
           }
-          let randid = Math.floor(Math.random() * 10000);
-          const category = {
-            id: randid,
+          const newCategory = {
+            id: Math.floor(Math.random() * 10000),
             name: categoryName,
           };
-          categories.push(category);
+          categories.push(newCategory);
           saveData("categories", categories);
           renderCategories();
         });
+
+      // ===============================
+      // Cancel Edit Handler
+      // ===============================
+      document.getElementById("cancelEditBtn").addEventListener("click", () => {
+        editingCourseId = null;
+        document.getElementById("courseForm").reset();
+        document.getElementById("courseSubmitBtn").textContent = "Add Course";
+        document.getElementById("cancelEditBtn").style.display = "none";
+        document.getElementById("paidPriceContainer").style.display = "none";
+      });
+
+      // ===============================
+      // Price Radio Button Change Listener
+      // ===============================
+      document.querySelectorAll('input[name="courseCost"]').forEach((radio) => {
+        radio.addEventListener("change", function () {
+          document.getElementById("paidPriceContainer").style.display =
+            this.value === "paid" ? "block" : "none";
+        });
+      });
+
+      // ===============================
+      // Enrollment Request Functions (User Side)
+      // ===============================
       function requestRegistration(courseId) {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (!loggedInUser) {
@@ -419,6 +626,10 @@
         );
         renderCourses();
       }
+
+      // ===============================
+      // Admin Registration Handling Functions
+      // ===============================
       function approveRegistration(registrationId) {
         let registrations = getData("registrations");
         const regIndex = registrations.findIndex(
@@ -430,6 +641,7 @@
         }
         registrations[regIndex].status = "approved";
         saveData("registrations", registrations);
+
         const studentId = registrations[regIndex].studentId;
         const courseId = registrations[regIndex].courseId;
         const courses = getData("courses");
@@ -462,6 +674,10 @@
         alert("Registration rejected.");
         renderRegistrations();
       }
+
+      // ===============================
+      // View Management Functions
+      // ===============================
       function manageCourses() {
         document.getElementById("courseManagement").style.display = "block";
         document.getElementById("categoryManagement").style.display = "none";
@@ -482,6 +698,7 @@
         document.getElementById("studentManagement").style.display = "block";
         document.getElementById("registrationManagement").style.display =
           "none";
+        renderStudents();
       }
       function manageRegistrations() {
         document.getElementById("courseManagement").style.display = "none";
@@ -492,12 +709,18 @@
         renderRegistrations();
       }
 
+      // ===============================
+      // Logout Function
+      // ===============================
       const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("loggedInUser");
         window.location.href = "Login.html";
       };
 
+      // ===============================
+      // Filtering Courses (if needed)
+      // ===============================
       function filterAndDisplayCourses() {
         let courses = getData("courses");
         const searchQuery = document
@@ -542,8 +765,11 @@
         .getElementById("price-filter")
         .addEventListener("change", filterAndDisplayCourses);
 
-      const courses = initCourses();
-      displayCourses(courses);
+      // ===============================
+      // Initial Rendering Calls
+      // ===============================
+      const courses = getData("courses");
+      renderCourses();
       renderCategories();
       renderStudents();
       renderRegistrations();
