@@ -147,14 +147,12 @@
     </style>
   </head>
   <body>
-    <!-- Header -->
     <header class="header">
       <div class="flex">
         <a href="home.html" class="logo">3lmny</a>
       </div>
     </header>
 
-    <!-- Admin Container -->
     <div class="admin-container">
       <h1>Admin Dashboard</h1>
       <div class="admin-options">
@@ -165,7 +163,6 @@
         <button onclick="logout()">Logout</button>
       </div>
 
-      <!-- Course Management Section -->
       <div id="courseManagement" class="management-section active">
         <h2>Manage Courses</h2>
         <form id="courseForm">
@@ -181,9 +178,7 @@
             placeholder="Image URL"
             required
           />
-          <select id="courseCategory" required>
-            <!-- Options will be populated dynamically -->
-          </select>
+          <select id="courseCategory" required></select>
           <input
             type="text"
             id="courseInstructor"
@@ -195,7 +190,7 @@
             placeholder="Course Description"
             required
           ></textarea>
-          <!-- Course Cost Options -->
+
           <div class="course-cost-group">
             <label>
               <input type="radio" name="courseCost" value="free" checked /> Free
@@ -204,7 +199,7 @@
               <input type="radio" name="courseCost" value="paid" /> Paid
             </label>
           </div>
-          <!-- Paid Price Container -->
+
           <div id="paidPriceContainer" style="display: none">
             <input type="text" id="coursePaidPrice" placeholder="Enter Price" />
           </div>
@@ -225,12 +220,9 @@
             Cancel Edit
           </button>
         </form>
-        <ul id="courseList">
-          <!-- Courses will be populated dynamically -->
-        </ul>
+        <ul id="courseList"></ul>
       </div>
 
-      <!-- Category Management Section -->
       <div id="categoryManagement" class="management-section">
         <h2>Manage Categories</h2>
         <form id="categoryForm">
@@ -242,12 +234,9 @@
           />
           <button type="submit">Add Category</button>
         </form>
-        <ul id="categoryList">
-          <!-- Categories will be populated dynamically -->
-        </ul>
+        <ul id="categoryList"></ul>
       </div>
 
-      <!-- Student Management Section -->
       <div id="studentManagement" class="management-section">
         <h2>Manage Students</h2>
         <table id="studentTable">
@@ -309,14 +298,8 @@
 
       initializeLocalStorage();
 
-      // ===============================
-      // Global Variable for Editing
-      // ===============================
       let editingCourseId = null;
 
-      // ===============================
-      // Rendering Functions
-      // ===============================
       const renderCourses = () => {
         const courses = getData("courses");
         const courseList = document.getElementById("courseList");
@@ -426,9 +409,6 @@
         renderCategories();
       };
 
-      // ===============================
-      // Add/Edit Course & Category with Validation
-      // ===============================
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -457,11 +437,10 @@
           return;
         }
 
-        // Determine course cost from radio buttons.
         const costRadios = document.querySelector(
           'input[name="courseCost"]:checked'
         );
-        const courseCost = costRadios.value; // "free" or "paid"
+        const courseCost = costRadios.value;
         let finalPrice;
         if (courseCost === "free") {
           finalPrice = "free";
@@ -588,9 +567,6 @@
         });
       });
 
-      // ===============================
-      // Enrollment Request Functions (User Side)
-      // ===============================
       function requestRegistration(courseId) {
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         if (!loggedInUser) {
@@ -627,9 +603,6 @@
         renderCourses();
       }
 
-      // ===============================
-      // Admin Registration Handling Functions
-      // ===============================
       function approveRegistration(registrationId) {
         let registrations = getData("registrations");
         const regIndex = registrations.findIndex(
@@ -659,7 +632,6 @@
         alert("Registration approved and course added to enrolled courses.");
         renderRegistrations();
       }
-
       function rejectRegistration(registrationId) {
         let registrations = getData("registrations");
         const regIndex = registrations.findIndex(
@@ -669,15 +641,11 @@
           alert("Registration not found.");
           return;
         }
-        registrations[regIndex].status = "rejected";
+        registrations[regIndex].status = "rejec.ted";
         saveData("registrations", registrations);
         alert("Registration rejected.");
         renderRegistrations();
       }
-
-      // ===============================
-      // View Management Functions
-      // ===============================
       function manageCourses() {
         document.getElementById("courseManagement").style.display = "block";
         document.getElementById("categoryManagement").style.display = "none";
@@ -709,18 +677,12 @@
         renderRegistrations();
       }
 
-      // ===============================
-      // Logout Function
-      // ===============================
       const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("loggedInUser");
-        window.location.href = "Login.html";
+        window.location.href = "first.html";
       };
 
-      // ===============================
-      // Filtering Courses (if needed)
-      // ===============================
       function filterAndDisplayCourses() {
         let courses = getData("courses");
         const searchQuery = document
@@ -764,10 +726,6 @@
       document
         .getElementById("price-filter")
         .addEventListener("change", filterAndDisplayCourses);
-
-      // ===============================
-      // Initial Rendering Calls
-      // ===============================
       const courses = getData("courses");
       renderCourses();
       renderCategories();

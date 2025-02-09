@@ -67,11 +67,8 @@
       &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
     </footer>
 
-    <script>
+    <script defer>
       document.addEventListener("DOMContentLoaded", function () {
-        // ===============================
-        // Helper Functions for Local Storage
-        // ===============================
         const getData = (key) => {
           const data = localStorage.getItem(key);
           return data ? JSON.parse(data) : [];
@@ -90,31 +87,28 @@
 
         initializeLocalStorage();
 
-        // ===============================
-        // User Profile Management
-        // ===============================
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         const profileDiv = document.querySelector(".profile");
 
         const renderProfile = () => {
           if (loggedInUser) {
             profileDiv.innerHTML = `
-        <div class="user-info">
-          <img src="images/user.png" alt="User Image" />
-          <p class="name">${loggedInUser.username}</p>
-        </div>
-        <button id="logout-btn" class="btn">Logout</button>
-      `;
+                <div class="user-info">
+                    <img src="images/user.png" alt="User Image" />
+                    <p class="name">${loggedInUser.username}</p>
+                </div>
+                <button id="logout-btn" class="btn">Logout</button>
+            `;
             document
               .getElementById("logout-btn")
               .addEventListener("click", logoutFunction);
           } else {
             profileDiv.innerHTML = `
-        <div class="flex-btn">
-          <a href="first.html" class="option-btn">Login</a>
-          <a href="first.html" class="option-btn">Register</a>
-        </div>
-      `;
+                <div class="flex-btn">
+                    <a href="first.html" class="option-btn">Login</a>
+                    <a href="first.html" class="option-btn">Register</a>
+                </div>
+            `;
           }
         };
 
@@ -126,25 +120,10 @@
 
         renderProfile();
 
-        // Toggle profile dropdown
         document.getElementById("user-btn").addEventListener("click", () => {
           profileDiv.classList.toggle("active");
         });
 
-        // Initialize user-specific data
-        if (loggedInUser) {
-          const userKeys = [
-            `enrolledCourses_${loggedInUser.email}`,
-            `wishlistCourses_${loggedInUser.email}`,
-          ];
-          userKeys.forEach((key) => {
-            if (!localStorage.getItem(key)) saveData(key, []);
-          });
-        }
-
-        // ===============================
-        // Category Management
-        // ===============================
         const renderCategoryOptions = () => {
           const categorySelect = document.getElementById("category-filter");
           categorySelect.innerHTML = '<option value="">All Categories</option>';
@@ -159,9 +138,6 @@
 
         renderCategoryOptions();
 
-        // ===============================
-        // Course Management
-        // ===============================
         const displayCourses = (courses) => {
           const container = document.querySelector(".box-container");
           container.innerHTML = "";
@@ -194,28 +170,37 @@
             }
 
             box.innerHTML = `
-      <div class="course-header">
-        <img src="${course.image}" alt="Course image" class="course-thumb" />
-        <div class="course-meta">
-          <h3>${course.title}</h3>
-        </div>
-      </div>
-      <div class="course-body">
-        <p>${course.description}</p>
-        <hr>
-        <span>${course.videos || 0} videos</span>
-      </div>
-      <div class="course-footer">
-        <button class="inline-btn enroll-btn" data-course-id="${course.id}" ${
-              enrollDisabled ? "disabled" : ""
-            }>
-          ${enrollButtonText}
-        </button>
-        <button class="inline-btn wishlist-btn" data-course-id="${course.id}">
-          <i class="fas fa-heart"></i> Wishlist
-        </button>
-      </div>
-    `;
+                <div class="course-header">
+                    <img src="${
+                      course.image
+                    }" alt="Course image" class="course-thumb" />
+                    <div class="course-meta">
+                        <h3>${course.title}</h3>
+                    </div>
+                </div>
+                <div class="course-body">
+                    <p>${course.description}</p>
+                    <hr>
+                    <span>${course.videos || 0} videos</span>
+                </div>
+                <div class="course-footer">
+                    <button class="inline-btn enroll-btn" data-course-id="${
+                      course.id
+                    }" ${enrollDisabled ? "disabled" : ""}>
+                        ${enrollButtonText}
+                    </button>
+                    <button class="inline-btn wishlist-btn" data-course-id="${
+                      course.id
+                    }">
+                        <i class="fas fa-heart"></i> Wishlist
+                    </button>
+                 <button class="inline-btn content-btn" data-course-id="${
+                   course.id
+                 }">
+  Go to Content
+</button>
+                </div>
+            `;
 
             const enrollButton = box.querySelector(".enroll-btn");
             enrollButton.addEventListener("click", () => {
@@ -227,10 +212,24 @@
               addToWishlist(course.id);
             });
 
+            const contentButton = box.querySelector(".content-btn");
+            contentButton.addEventListener("click", () => {
+              redirectToContentPage(course.id);
+            });
+
             container.appendChild(box);
           });
         };
 
+        function redirectToContentPage(courseId) {
+          if (!courseId) {
+            alert("Invalid course ID");
+            return;
+          }
+          const url = new URL("../pages/content.html", window.location.origin);
+          url.searchParams.append("Id", courseId);
+          window.location.href = url.toString();
+        }
         const filterAndDisplayCourses = () => {
           let courses = getData("courses");
           const searchQuery = document
@@ -265,14 +264,10 @@
         document
           .getElementById("category-filter")
           .addEventListener("change", filterAndDisplayCourses);
-
         document
           .getElementById("price-filter")
           .addEventListener("change", filterAndDisplayCourses);
 
-        // ===============================
-        // Registration Management
-        // ===============================
         const requestRegistration = (courseId) => {
           if (!loggedInUser) {
             alert("Please login first to enroll in courses.");
@@ -290,8 +285,8 @@
           if (existingRequest) {
             alert(
               existingRequest.status === "pending"
-                ? "Your registration request for this course is already pending."
-                : "You are already enrolled in this course."
+                ? "Your registration request is already pending."
+                : "You are already enrolled."
             );
             return;
           }
@@ -305,40 +300,8 @@
 
           registrations.push(newRegistration);
           saveData("registrations", registrations);
-          alert(
-            "Registration request submitted. Your request is now pending approval."
-          );
+          alert("Registration request submitted.");
           filterAndDisplayCourses();
-        };
-
-        // ===============================
-        // Wishlist Management
-        // ===============================
-        const addToWishlist = (courseId) => {
-          if (!loggedInUser) {
-            alert("Please login first to add courses to your wishlist.");
-            return;
-          }
-
-          const wishlistKey = `wishlistCourses_${loggedInUser.email}`;
-          let wishlistCourses = getData(wishlistKey);
-
-          if (wishlistCourses.some((c) => c.id === courseId)) {
-            alert("This course is already in your wishlist.");
-            return;
-          }
-
-          const courses = getData("courses");
-          const courseToAdd = courses.find((c) => c.id === courseId);
-
-          if (!courseToAdd) {
-            alert("Course not found.");
-            return;
-          }
-
-          wishlistCourses.push(courseToAdd);
-          saveData(wishlistKey, wishlistCourses);
-          alert("Course added to your wishlist.");
         };
 
         document.getElementById("menu-btn").addEventListener("click", () => {
@@ -346,7 +309,10 @@
         });
 
         filterAndDisplayCourses();
-        filterAndDisplayCourses();
+      });
+      const contentButton = box.querySelector(".content-btn");
+      contentButton.addEventListener("click", () => {
+        redirectToContentPage(course.id);
       });
     </script>
   </body>
