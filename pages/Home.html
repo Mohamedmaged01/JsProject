@@ -341,16 +341,11 @@
           alert("Course added to your wishlist.");
         };
 
-        // ===============================
-        // Sidebar Toggle
-        // ===============================
         document.getElementById("menu-btn").addEventListener("click", () => {
           document.querySelector(".side-bar").classList.toggle("active");
         });
 
-        // ===============================
-        // Initial Render
-        // ===============================
+        filterAndDisplayCourses();
         filterAndDisplayCourses();
       });
     </script>
