@@ -3,14 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Home with Payment</title>
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
+    <!-- Your main stylesheet -->
     <link rel="stylesheet" href="style.css" />
+
+    <!-- PayPal SDK (include your client-id here) -->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=ARJES7kgCMQqNNefIqG73VZTXqANKFbyGI8VrcmoA1iiRUbPh6p1xdLIPhdmZYFZYyrUR4vIft99YIYg&components=buttons"
+      data-sdk-integration-source="button-factory"
+    ></script>
+
+    <!-- Modal Styles -->
+    <style>
+      /* Payment Modal Overlay */
+      .payment-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none; /* Hidden by default */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      /* Payment Container (modal content) */
+      .payment-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .payment-container h2 {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .form-group input[type="text"],
+      .form-group input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .close-btn {
+        background: #ccc;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .message {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
+    <!-- Header Section -->
     <header class="header">
       <section class="flex">
         <a href="home.html" class="logo" style="color: white">3lmny</a>
@@ -32,20 +106,27 @@
         <div class="profile"></div>
       </section>
     </header>
+
+    <!-- Sidebar Navigation -->
     <div class="side-bar">
       <nav class="navbar">
         <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="wishlist.html">
-          <i class="fas fa-heart"></i><span>Wishlist</span>
-        </a>
-        <a href="completed.html">
-          <i class="fas fa-check-circle"></i><span>Completed</span>
-        </a>
-        <a href="enrolled.html">
-          <i class="fas fa-user-graduate"></i><span>Enrolled</span>
-        </a>
+        <a href="wishlist.html"
+          ><i class="fas fa-heart"></i><span>Wishlist</span></a
+        >
+        <a href="courses.html"
+          ><i class="fas fa-graduation-cap"></i><span>Courses</span></a
+        >
+        <a href="completed.html"
+          ><i class="fas fa-check-circle"></i><span>Completed</span></a
+        >
+        <a href="enrolled.html"
+          ><i class="fas fa-user-graduate"></i><span>Enrolled</span></a
+        >
       </nav>
     </div>
+
+    <!-- Main Content: Courses Section -->
     <section class="courses">
       <h1 class="heading">Our Courses</h1>
       <div class="filters">
@@ -60,12 +141,61 @@
       </div>
       <div class="box-container"></div>
     </section>
+
+    <!-- Footer -->
     <footer class="footer">
       &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
     </footer>
 
+    <!-- Payment Modal (Hidden by default) -->
+    <div id="payment-modal" class="payment-modal">
+      <div class="payment-container">
+        <h2>Pay Now</h2>
+        <form id="payment-form">
+          <div class="form-group">
+            <label for="pm-name">Full Name</label>
+            <input
+              type="text"
+              id="pm-name"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pm-email">Email</label>
+            <input
+              type="email"
+              id="pm-email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pm-courseName">Course Name</label>
+            <input
+              type="text"
+              id="pm-courseName"
+              name="courseName"
+              placeholder="Course Name"
+              required
+            />
+          </div>
+        </form>
+
+        <div id="paypal-button-container"></div>
+        <div id="payment-message" class="message"></div>
+        <button id="close-payment-modal" class="close-btn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Main Script -->
     <script defer>
       document.addEventListener("DOMContentLoaded", function () {
+        // Helper functions for localStorage
         const getData = (key) => {
           const data = localStorage.getItem(key);
           return data ? JSON.parse(data) : [];
@@ -75,7 +205,7 @@
           localStorage.setItem(key, JSON.stringify(data));
         };
 
-        // Initialize localStorage keys including "wishlist"
+        // Initialize keys if not present
         const initializeLocalStorage = () => {
           const keys = [
             "courses",
@@ -83,35 +213,36 @@
             "students",
             "registrations",
             "wishlist",
+            "completed",
           ];
           keys.forEach((key) => {
             if (!localStorage.getItem(key)) saveData(key, []);
           });
         };
-
         initializeLocalStorage();
 
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         const profileDiv = document.querySelector(".profile");
 
+        // Render Profile
         const renderProfile = () => {
           if (loggedInUser) {
             profileDiv.innerHTML = `
-                <div class="user-info">
-                    <img src="images/user.png" alt="User Image" />
-                    <p class="name">${loggedInUser.username}</p>
-                </div>
-                <button id="logout-btn" class="btn">Logout</button>
+              <div class="user-info">
+                <img src="images/user.png" alt="User Image" />
+                <p class="name">${loggedInUser.username}</p>
+              </div>
+              <button id="logout-btn" class="btn">Logout</button>
             `;
             document
               .getElementById("logout-btn")
               .addEventListener("click", logoutFunction);
           } else {
             profileDiv.innerHTML = `
-                <div class="flex-btn">
-                    <a href="first.html" class="option-btn">Login</a>
-                    <a href="first.html" class="option-btn">Register</a>
-                </div>
+              <div class="flex-btn">
+                <a href="first.html" class="option-btn">Login</a>
+                <a href="first.html" class="option-btn">Register</a>
+              </div>
             `;
           }
         };
@@ -128,20 +259,111 @@
           profileDiv.classList.toggle("active");
         });
 
-        const renderCategoryOptions = () => {
-          const categorySelect = document.getElementById("category-filter");
-          categorySelect.innerHTML = '<option value="">All Categories</option>';
-          const categories = getData("categories");
-          categories.forEach((cat) => {
-            const option = document.createElement("option");
-            option.value = cat.id;
-            option.textContent = cat.name;
-            categorySelect.appendChild(option);
-          });
+        document.getElementById("menu-btn").addEventListener("click", () => {
+          document.querySelector(".side-bar").classList.toggle("active");
+        });
+
+        // Global variable to store the selected course ID
+        let selectedCourseId = null;
+
+        // Function to show the payment modal and initialize PayPal Buttons
+        const showPaymentModal = (courseId, courseTitle) => {
+          selectedCourseId = courseId;
+
+          // Auto-fill form fields using logged in user's data if available
+          document.getElementById("pm-name").value = loggedInUser
+            ? loggedInUser.username
+            : "";
+          document.getElementById("pm-email").value = loggedInUser
+            ? loggedInUser.email
+            : "";
+          document.getElementById("pm-courseName").value = courseTitle;
+
+          // Clear any previous PayPal button renderings
+          document.getElementById("paypal-button-container").innerHTML = "";
+          document.getElementById("payment-message").textContent = "";
+
+          // Render PayPal Buttons inside the modal
+          paypal
+            .Buttons({
+              createOrder: function (data, actions) {
+                // Set up the transaction details here. You can customize the amount as needed.
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        value: "200.00",
+                      },
+                    },
+                  ],
+                });
+              },
+              onApprove: function (data, actions) {
+                return actions.order.capture().then(function () {
+                  alert("Payment successful");
+                  // After successful payment, redirect to the course content page
+                  redirectToContentPage(selectedCourseId);
+                });
+              },
+              onError: function (err) {
+                const messageEl = document.getElementById("payment-message");
+                messageEl.textContent = "Payment failed. Please try again.";
+                messageEl.style.color = "red";
+              },
+              style: {
+                shape: "rect",
+                layout: "vertical",
+                color: "gold",
+                label: "paypal",
+              },
+            })
+            .render("#paypal-button-container");
+
+          // Show the modal
+          document.getElementById("payment-modal").style.display = "flex";
         };
 
-        renderCategoryOptions();
+        // Close payment modal when "Cancel" is clicked
+        document
+          .getElementById("close-payment-modal")
+          .addEventListener("click", function () {
+            document.getElementById("payment-modal").style.display = "none";
+          });
 
+        // Redirect function after payment success
+        const redirectToContentPage = (courseId) => {
+          if (!courseId) {
+            alert("Invalid course ID");
+            return;
+          }
+          // Hide the payment modal
+          document.getElementById("payment-modal").style.display = "none";
+          // Redirect to the content page (adjust URL/path as needed)
+          const url = new URL("../pages/content.html", window.location.origin);
+          url.searchParams.append("Id", courseId);
+          window.location.href = url.toString();
+        };
+
+        // Function to add a course to the wishlist
+        const addToWishlist = (courseId, buttonElement) => {
+          if (!loggedInUser) {
+            alert("Please login first to add courses to your wishlist.");
+            return;
+          }
+          let wishlist = getData("wishlist");
+          if (wishlist.includes(courseId)) {
+            alert("This course is already in your wishlist.");
+            return;
+          }
+          wishlist.push(courseId);
+          saveData("wishlist", wishlist);
+          // Update the button text and disable it to indicate the course has been added
+          buttonElement.innerHTML = '<i class="fas fa-heart"></i> Added';
+          buttonElement.disabled = true;
+          alert("Course added to wishlist.");
+        };
+
+        // Function to display courses (simplified version)
         const displayCourses = (courses) => {
           const container = document.querySelector(".box-container");
           container.innerHTML = "";
@@ -150,8 +372,6 @@
             return;
           }
 
-          // Get the current wishlist so that we can update the button state if needed.
-          const wishlist = getData("wishlist");
           const registrations = getData("registrations");
 
           courses.forEach((course) => {
@@ -177,73 +397,65 @@
             }
 
             box.innerHTML = `
-                <div class="course-header">
-                    <img src="${
-                      course.image
-                    }" alt="Course image" class="course-thumb" />
-                    <div class="course-meta">
-                        <h3>${course.title}</h3>
-                    </div>
+              <div class="course-header">
+                <img src="${
+                  course.image
+                }" alt="Course image" class="course-thumb" />
+                <div class="course-meta">
+                  <h3>${course.title}</h3>
                 </div>
-                <div class="course-body">
-                    <p>${course.description}</p>
-                    <hr>
-                    <span>${course.videos || 0} videos</span>
-                </div>
-                <div class="course-footer">
-                    <button class="inline-btn enroll-btn" data-course-id="${
-                      course.id
-                    }" ${enrollDisabled ? "disabled" : ""}>
-                        ${enrollButtonText}
-                    </button>
-                    <button class="inline-btn wishlist-btn" data-course-id="${
-                      course.id
-                    }">
-                        <i class="fas fa-heart"></i> Wishlist
-                    </button>
-                    <button class="inline-btn content-btn" data-course-id="${
-                      course.id
-                    }">
-                        Go to Content
-                    </button>
-                </div>
+              </div>
+              <div class="course-body">
+                <p>${course.description}</p>
+                <hr>
+                <span>${course.videos || 0} videos</span>
+              </div>
+              <div class="course-footer">
+                <button class="inline-btn enroll-btn" data-course-id="${
+                  course.id
+                }" ${enrollDisabled ? "disabled" : ""}>
+                  ${enrollButtonText}
+                </button>
+                <button class="inline-btn wishlist-btn" data-course-id="${
+                  course.id
+                }">
+                  <i class="fas fa-heart"></i> Wishlist
+                </button>
+                <!-- Instead of direct redirect, call showPaymentModal() -->
+                <button class="inline-btn content-btn" data-course-id="${
+                  course.id
+                }" data-course-title="${course.title}">
+                  Go to Content
+                </button>
+              </div>
             `;
 
             const enrollButton = box.querySelector(".enroll-btn");
             enrollButton.addEventListener("click", () => {
-              requestRegistration(course.id);
+              // Call your enrollment function here (if implemented)
+              // requestRegistration(course.id);
             });
 
             const wishlistButton = box.querySelector(".wishlist-btn");
-            // Check if the course is already in the wishlist
-            if (wishlist.includes(course.id)) {
-              wishlistButton.innerHTML = '<i class="fas fa-heart"></i> Added';
-              wishlistButton.disabled = true;
-            } else {
-              wishlistButton.addEventListener("click", (e) => {
-                addToWishlist(course.id, e.currentTarget);
-              });
-            }
+            // Updated wishlist button: pass the button element to addToWishlist
+            wishlistButton.addEventListener("click", (e) => {
+              addToWishlist(course.id, e.currentTarget);
+            });
 
             const contentButton = box.querySelector(".content-btn");
-            contentButton.addEventListener("click", () => {
-              redirectToContentPage(course.id);
+            contentButton.addEventListener("click", (e) => {
+              // Retrieve course id and title from data attributes
+              const courseId = e.currentTarget.getAttribute("data-course-id");
+              const courseTitle =
+                e.currentTarget.getAttribute("data-course-title");
+              showPaymentModal(courseId, courseTitle);
             });
 
             container.appendChild(box);
           });
         };
 
-        function redirectToContentPage(courseId) {
-          if (!courseId) {
-            alert("Invalid course ID");
-            return;
-          }
-          const url = new URL("../pages/content.html", window.location.origin);
-          url.searchParams.append("Id", courseId);
-          window.location.href = url.toString();
-        }
-
+        // Function to filter and display courses (for demonstration)
         const filterAndDisplayCourses = () => {
           let courses = getData("courses");
           const searchQuery = document
@@ -282,73 +494,9 @@
           .getElementById("price-filter")
           .addEventListener("change", filterAndDisplayCourses);
 
-        const requestRegistration = (courseId) => {
-          if (!loggedInUser) {
-            alert("Please login first to enroll in courses.");
-            return;
-          }
-
-          const registrations = getData("registrations");
-          const existingRequest = registrations.find(
-            (r) =>
-              r.courseId === courseId &&
-              r.studentId === loggedInUser.email &&
-              (r.status === "pending" || r.status === "approved")
-          );
-
-          if (existingRequest) {
-            alert(
-              existingRequest.status === "pending"
-                ? "Your registration request is already pending."
-                : "You are already enrolled."
-            );
-            return;
-          }
-
-          const newRegistration = {
-            id: Math.floor(Math.random() * 10000),
-            studentId: loggedInUser.email,
-            courseId: courseId,
-            status: "pending",
-          };
-
-          registrations.push(newRegistration);
-          saveData("registrations", registrations);
-          alert("Registration request submitted.");
-          filterAndDisplayCourses();
-        };
-
-        // Updated addToWishlist function that checks if the course is already in wishlist
-        // and updates the button text accordingly.
-        const addToWishlist = (courseId, buttonElement) => {
-          if (!loggedInUser) {
-            alert("Please login first to add courses to your wishlist.");
-            return;
-          }
-          const wishlist = getData("wishlist");
-
-          if (wishlist.includes(courseId)) {
-            // If already in wishlist, update the button text
-            buttonElement.innerHTML = '<i class="fas fa-heart"></i> Added';
-            buttonElement.disabled = true;
-            return;
-          }
-
-          wishlist.push(courseId);
-          saveData("wishlist", wishlist);
-          // Update the button text after adding the course to the wishlist
-          buttonElement.innerHTML = '<i class="fas fa-heart"></i> Added';
-          buttonElement.disabled = true;
-        };
-
-        document.getElementById("menu-btn").addEventListener("click", () => {
-          document.querySelector(".side-bar").classList.toggle("active");
-        });
-
         // Display courses on initial load
         filterAndDisplayCourses();
       });
-      // No duplicate code exists outside the DOMContentLoaded event.
     </script>
   </body>
 </html>

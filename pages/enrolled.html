@@ -9,9 +9,66 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css" />
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&components=buttons"></script>
+    <!-- Payment Modal Styles -->
+    <style>
+      .payment-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .payment-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+      }
+      .payment-container h2 {
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .form-group input[type="text"],
+      .form-group input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .close-btn {
+        background: #ccc;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .message {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    <!-- Header (same as home) -->
+    <!-- Header -->
     <header class="header">
       <section class="flex">
         <a href="home.html" class="logo" style="color: white">3lmny</a>
@@ -28,6 +85,9 @@
         <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="wishlist.html"
           ><i class="fas fa-heart"></i><span>Wishlist</span></a
+        >
+        <a href="courses.html"
+          ><i class="fas fa-graduation-cap"></i><span>Courses</span></a
         >
         <a href="completed.html"
           ><i class="fas fa-check-circle"></i><span>Completed</span></a
@@ -46,10 +106,50 @@
     <footer class="footer">
       &copy; Copyright @ 2025 by <span>Team ITI</span> | All rights reserved!
     </footer>
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="payment-modal">
+      <div class="payment-container">
+        <h2>Pay Now</h2>
+        <form id="payment-form">
+          <div class="form-group">
+            <label for="pm-name">Full Name</label>
+            <input
+              type="text"
+              id="pm-name"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="pm-email">Email</label>
+            <input
+              type="email"
+              id="pm-email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="pm-courseName">Course Name</label>
+            <input
+              type="text"
+              id="pm-courseName"
+              name="courseName"
+              placeholder="Course Name"
+              required
+            />
+          </div>
+        </form>
+        <div id="paypal-button-container"></div>
+        <div id="payment-message" class="message"></div>
+        <button id="close-payment-modal" class="close-btn">Cancel</button>
+      </div>
+    </div>
     <!-- Script -->
-    <script defer>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Helper functions for localStorage
         const getData = (key) => {
           const data = localStorage.getItem(key);
           return data ? JSON.parse(data) : [];
@@ -57,7 +157,6 @@
         const saveData = (key, data) => {
           localStorage.setItem(key, JSON.stringify(data));
         };
-        // Initialize keys if not present
         const initializeLocalStorage = () => {
           const keys = [
             "courses",
@@ -65,14 +164,13 @@
             "students",
             "registrations",
             "wishlist",
+            "completed",
           ];
           keys.forEach((key) => {
             if (!localStorage.getItem(key)) saveData(key, []);
           });
         };
         initializeLocalStorage();
-
-        // Get logged in user
         const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
         const profileDiv = document.querySelector(".profile");
         const renderProfile = () => {
@@ -102,37 +200,90 @@
           window.location.href = "first.html";
         };
         renderProfile();
-
         document.getElementById("user-btn").addEventListener("click", () => {
           profileDiv.classList.toggle("active");
         });
         document.getElementById("menu-btn").addEventListener("click", () => {
           document.querySelector(".side-bar").classList.toggle("active");
         });
-
-        // Display enrolled courses
+        let selectedCourseId = null;
+        const showPaymentModal = (courseId, courseTitle) => {
+          selectedCourseId = courseId;
+          document.getElementById("pm-name").value = loggedInUser
+            ? loggedInUser.username
+            : "";
+          document.getElementById("pm-email").value = loggedInUser
+            ? loggedInUser.email
+            : "";
+          document.getElementById("pm-courseName").value = courseTitle;
+          document.getElementById("paypal-button-container").innerHTML = "";
+          document.getElementById("payment-message").textContent = "";
+          paypal
+            .Buttons({
+              createOrder: function (data, actions) {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: { value: "200.00" },
+                    },
+                  ],
+                });
+              },
+              onApprove: function (data, actions) {
+                return actions.order.capture().then(function () {
+                  alert("Payment successful");
+                  redirectToContentPage(selectedCourseId);
+                });
+              },
+              onError: function (err) {
+                const messageEl = document.getElementById("payment-message");
+                messageEl.textContent = "Payment failed. Please try again.";
+                messageEl.style.color = "red";
+              },
+              style: {
+                shape: "rect",
+                layout: "vertical",
+                color: "gold",
+                label: "paypal",
+              },
+            })
+            .render("#paypal-button-container");
+          document.getElementById("payment-modal").style.display = "flex";
+        };
+        document
+          .getElementById("close-payment-modal")
+          .addEventListener("click", function () {
+            document.getElementById("payment-modal").style.display = "none";
+          });
+        const redirectToContentPage = (courseId) => {
+          if (!courseId) {
+            alert("Invalid course ID");
+            return;
+          }
+          document.getElementById("payment-modal").style.display = "none";
+          const url = new URL("../pages/content.html", window.location.origin);
+          url.searchParams.append("Id", courseId);
+          window.location.href = url.toString();
+        };
         const displayEnrolledCourses = () => {
           const enrolledContainer =
             document.getElementById("enrolled-container");
           enrolledContainer.innerHTML = "";
           const courses = getData("courses");
           const registrations = getData("registrations");
-
-          // Filter registrations for the current user with status "approved"
-          const userRegistrations = registrations.filter(
+          // Filter approved registrations for the current user
+          const userRegs = registrations.filter(
             (r) =>
               loggedInUser &&
               r.studentId === loggedInUser.email &&
               r.status === "approved"
           );
-          if (userRegistrations.length === 0) {
+          if (userRegs.length === 0) {
             enrolledContainer.innerHTML =
               "<p class='no-results'>You have not enrolled in any courses yet.</p>";
             return;
           }
-
-          // For each approved registration, find the course and display it
-          userRegistrations.forEach((reg) => {
+          userRegs.forEach((reg) => {
             const course = courses.find((c) => c.id === reg.courseId);
             if (!course) return;
             const box = document.createElement("div");
@@ -154,29 +305,21 @@
               <div class="course-footer">
                 <button class="inline-btn content-btn" data-course-id="${
                   course.id
-                }">Go to Content</button>
+                }" data-course-title="${course.title}">
+                  Go to Content
+                </button>
               </div>
             `;
             const contentButton = box.querySelector(".content-btn");
-            contentButton.addEventListener("click", () => {
-              redirectToContentPage(course.id);
+            contentButton.addEventListener("click", (e) => {
+              const courseId = e.currentTarget.getAttribute("data-course-id");
+              const courseTitle =
+                e.currentTarget.getAttribute("data-course-title");
+              showPaymentModal(courseId, courseTitle);
             });
             enrolledContainer.appendChild(box);
           });
         };
-
-        // Redirect to content page function (same as before)
-        const redirectToContentPage = (courseId) => {
-          if (!courseId) {
-            alert("Invalid course ID");
-            return;
-          }
-          const url = new URL("../pages/content.html", window.location.origin);
-          url.searchParams.append("Id", courseId);
-          window.location.href = url.toString();
-        };
-
-        // Initially display enrolled courses
         displayEnrolledCourses();
       });
     </script>
