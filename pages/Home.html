@@ -35,18 +35,15 @@
     <div class="side-bar">
       <nav class="navbar">
         <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="wishlist.html"
-          ><i class="fas fa-heart"></i><span>Wishlist</span></a
-        >
-        <a href="courses.html"
-          ><i class="fas fa-graduation-cap"></i><span>Courses</span></a
-        >
-        <a href="completed.html"
-          ><i class="fas fa-check-circle"></i><span>Completed</span></a
-        >
-        <a href="enrolled.html"
-          ><i class="fas fa-user-graduate"></i><span>Enrolled</span></a
-        >
+        <a href="wishlist.html">
+          <i class="fas fa-heart"></i><span>Wishlist</span>
+        </a>
+        <a href="completed.html">
+          <i class="fas fa-check-circle"></i><span>Completed</span>
+        </a>
+        <a href="enrolled.html">
+          <i class="fas fa-user-graduate"></i><span>Enrolled</span>
+        </a>
       </nav>
     </div>
     <section class="courses">
@@ -78,8 +75,15 @@
           localStorage.setItem(key, JSON.stringify(data));
         };
 
+        // Initialize localStorage keys including "wishlist"
         const initializeLocalStorage = () => {
-          const keys = ["courses", "categories", "students", "registrations"];
+          const keys = [
+            "courses",
+            "categories",
+            "students",
+            "registrations",
+            "wishlist",
+          ];
           keys.forEach((key) => {
             if (!localStorage.getItem(key)) saveData(key, []);
           });
@@ -146,7 +150,10 @@
             return;
           }
 
+          // Get the current wishlist so that we can update the button state if needed.
+          const wishlist = getData("wishlist");
           const registrations = getData("registrations");
+
           courses.forEach((course) => {
             const box = document.createElement("div");
             box.className = "box";
@@ -194,11 +201,11 @@
                     }">
                         <i class="fas fa-heart"></i> Wishlist
                     </button>
-                 <button class="inline-btn content-btn" data-course-id="${
-                   course.id
-                 }">
-  Go to Content
-</button>
+                    <button class="inline-btn content-btn" data-course-id="${
+                      course.id
+                    }">
+                        Go to Content
+                    </button>
                 </div>
             `;
 
@@ -208,9 +215,15 @@
             });
 
             const wishlistButton = box.querySelector(".wishlist-btn");
-            wishlistButton.addEventListener("click", () => {
-              addToWishlist(course.id);
-            });
+            // Check if the course is already in the wishlist
+            if (wishlist.includes(course.id)) {
+              wishlistButton.innerHTML = '<i class="fas fa-heart"></i> Added';
+              wishlistButton.disabled = true;
+            } else {
+              wishlistButton.addEventListener("click", (e) => {
+                addToWishlist(course.id, e.currentTarget);
+              });
+            }
 
             const contentButton = box.querySelector(".content-btn");
             contentButton.addEventListener("click", () => {
@@ -230,6 +243,7 @@
           url.searchParams.append("Id", courseId);
           window.location.href = url.toString();
         }
+
         const filterAndDisplayCourses = () => {
           let courses = getData("courses");
           const searchQuery = document
@@ -304,16 +318,37 @@
           filterAndDisplayCourses();
         };
 
+        // Updated addToWishlist function that checks if the course is already in wishlist
+        // and updates the button text accordingly.
+        const addToWishlist = (courseId, buttonElement) => {
+          if (!loggedInUser) {
+            alert("Please login first to add courses to your wishlist.");
+            return;
+          }
+          const wishlist = getData("wishlist");
+
+          if (wishlist.includes(courseId)) {
+            // If already in wishlist, update the button text
+            buttonElement.innerHTML = '<i class="fas fa-heart"></i> Added';
+            buttonElement.disabled = true;
+            return;
+          }
+
+          wishlist.push(courseId);
+          saveData("wishlist", wishlist);
+          // Update the button text after adding the course to the wishlist
+          buttonElement.innerHTML = '<i class="fas fa-heart"></i> Added';
+          buttonElement.disabled = true;
+        };
+
         document.getElementById("menu-btn").addEventListener("click", () => {
           document.querySelector(".side-bar").classList.toggle("active");
         });
 
+        // Display courses on initial load
         filterAndDisplayCourses();
       });
-      const contentButton = box.querySelector(".content-btn");
-      contentButton.addEventListener("click", () => {
-        redirectToContentPage(course.id);
-      });
+      // No duplicate code exists outside the DOMContentLoaded event.
     </script>
   </body>
 </html>

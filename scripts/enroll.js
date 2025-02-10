@@ -51,7 +51,6 @@ signUpForm.addEventListener("submit", (evt) => {
   }
 
   let users = JSON.parse(localStorage.getItem("users")) || {};
-
   if (users[email]) {
     document.getElementById("emailErrorSignUp").textContent =
       "Email already in use.";
@@ -60,6 +59,15 @@ signUpForm.addEventListener("submit", (evt) => {
 
   users[email] = { name, password };
   localStorage.setItem("users", JSON.stringify(users));
+
+  let students = JSON.parse(localStorage.getItem("students")) || [];
+  const newStudent = {
+    id: Math.floor(Math.random() * 10000),
+    name: name,
+    email: email,
+  };
+  students.push(newStudent);
+  localStorage.setItem("students", JSON.stringify(students));
 
   const token = btoa(JSON.stringify({ email, name }));
   localStorage.setItem("token", token);
@@ -70,11 +78,8 @@ signUpForm.addEventListener("submit", (evt) => {
   );
 
   alert("Account created successfully!");
-
-
   window.location.href = "Home.html";
 });
-
 
 loginForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
@@ -95,30 +100,24 @@ loginForm.addEventListener("submit", (evt) => {
     return;
   }
 
-  // Check if the password is correct.
   if (users[email].password !== password) {
     document.getElementById("passwordErrorLogin").textContent =
       "Incorrect password.";
     return;
   }
 
-  // Create and store an encoded token.
   const token = btoa(JSON.stringify({ email, name: users[email].name }));
   localStorage.setItem("token", token);
 
-  // Store the logged in user details.
   localStorage.setItem(
     "loggedInUser",
     JSON.stringify({ username: users[email].name, email })
   );
 
   alert("Login successful!");
-
-  // Redirect to home page.
   window.location.href = "Home.html";
 });
 
-// Forgot Password Handler
 forgotPasswordLink.addEventListener("click", (evt) => {
   evt.preventDefault();
   const email = prompt("Please enter your email address:");
@@ -131,14 +130,12 @@ forgotPasswordLink.addEventListener("click", (evt) => {
 
   const newPassword = prompt("Enter a new password:");
   if (newPassword) {
-    // (Optional: Add password validation for the new password here.)
     users[email].password = newPassword;
     localStorage.setItem("users", JSON.stringify(users));
     alert("Password reset successful!");
   }
 });
 
-// Optional: Toggle between sign-up and login views.
 document.getElementById("signUp").addEventListener("click", () => {
   document.getElementById("main").classList.add("right-panel-active");
 });

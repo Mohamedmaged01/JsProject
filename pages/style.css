@@ -97,6 +97,7 @@ a {
 .header .profile .user-info {
   text-align: center;
   margin-bottom: 1rem;
+  color: #000000;
 }
 
 .header .profile .user-info img {

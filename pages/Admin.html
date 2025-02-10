@@ -163,7 +163,8 @@
         <button onclick="logout()">Logout</button>
       </div>
 
-      <div id="courseManagement" class="management-section active">
+      <!-- Course Management Section -->
+      <div id="courseManagement" class="management-section">
         <h2>Manage Courses</h2>
         <form id="courseForm">
           <input
@@ -223,6 +224,7 @@
         <ul id="courseList"></ul>
       </div>
 
+      <!-- Category Management Section -->
       <div id="categoryManagement" class="management-section">
         <h2>Manage Categories</h2>
         <form id="categoryForm">
@@ -232,11 +234,19 @@
             placeholder="Category Name"
             required
           />
-          <button type="submit">Add Category</button>
+          <button type="submit" id="categorySubmitBtn">Add Category</button>
+          <button
+            type="button"
+            id="cancelCategoryEditBtn"
+            style="display: none"
+          >
+            Cancel Edit
+          </button>
         </form>
         <ul id="categoryList"></ul>
       </div>
 
+      <!-- Student Management Section -->
       <div id="studentManagement" class="management-section">
         <h2>Manage Students</h2>
         <table id="studentTable">
@@ -245,10 +255,11 @@
               <th>Name</th>
               <th>Email</th>
               <th>Enrolled Courses</th>
+              <th>Completed Courses</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Students and their progress will be populated dynamically -->
+            <!-- Students and their courses will be populated dynamically -->
           </tbody>
         </table>
       </div>
@@ -299,7 +310,11 @@
       initializeLocalStorage();
 
       let editingCourseId = null;
+      let editingCategoryId = null; // For category edit mode
 
+      // ===============================
+      // Render Functions
+      // ===============================
       const renderCourses = () => {
         const courses = getData("courses");
         const courseList = document.getElementById("courseList");
@@ -327,6 +342,7 @@
             (category) => `
           <li>
             ${category.name}
+            <button onclick="editCategory(${category.id})">Edit</button>
             <button onclick="deleteCategory(${category.id})">Delete</button>
           </li>
         `
@@ -352,16 +368,25 @@
           .querySelector("tbody");
         studentTableBody.innerHTML = students
           .map((student) => {
+            // Retrieve enrolled and completed courses from localStorage
             const enrolledKey = "enrolledCourses_" + student.email;
+            const completedKey = "completedCourses_" + student.email;
             const enrolledCourses = getData(enrolledKey);
-            const courseTitles = enrolledCourses.length
+            const completedCourses = getData(completedKey);
+
+            const enrolledTitles = enrolledCourses.length
               ? enrolledCourses.map((c) => c.title).join(", ")
               : "No courses enrolled";
+            const completedTitles = completedCourses.length
+              ? completedCourses.map((c) => c.title).join(", ")
+              : "No courses completed";
+
             return `
           <tr>
             <td>${student.name}</td>
             <td>${student.email}</td>
-            <td>${courseTitles}</td>
+            <td>${enrolledTitles}</td>
+            <td>${completedTitles}</td>
           </tr>
         `;
           })
@@ -370,29 +395,37 @@
 
       const renderRegistrations = () => {
         const registrations = getData("registrations");
+        const students = getData("students");
+        const courses = getData("courses");
+
         const registrationTableBody = document
           .getElementById("registrationTable")
           .querySelector("tbody");
+
         registrationTableBody.innerHTML = registrations
-          .map(
-            (registration) => `
-          <tr>
-            <td>${registration.studentId}</td>
-            <td>${registration.courseId}</td>
-            <td>${registration.status}</td>
-            <td>
-              <button onclick="approveRegistration(${registration.id})">Approve</button>
-              <button onclick="rejectRegistration(${registration.id})">Reject</button>
-            </td>
-          </tr>
-        `
-          )
+          .map((registration) => {
+            const student = students.find(
+              (s) => s.email === registration.studentId
+            );
+            const course = courses.find((c) => c.id === registration.courseId);
+            const actionButtons =
+              registration.status === "pending"
+                ? `<button onclick="viewRegistration(${registration.id})">View Details</button>
+                   <button onclick="approveRegistration(${registration.id})">Approve</button>
+                   <button onclick="rejectRegistration(${registration.id})">Reject</button>`
+                : `<button onclick="viewRegistration(${registration.id})">View Details</button>`;
+            return `
+        <tr>
+          <td>${student ? student.name : "Unknown Student"}</td>
+          <td>${course ? course.title : "Unknown Course"}</td>
+          <td>${registration.status}</td>
+          <td>${actionButtons}</td>
+        </tr>
+      `;
+          })
           .join("");
       };
 
-      // ===============================
-      // Delete Functions
-      // ===============================
       const deleteCourse = (courseId) => {
         let courses = getData("courses");
         courses = courses.filter((course) => course.id !== courseId);
@@ -409,6 +442,50 @@
         renderCategories();
       };
 
+      function editCourse(courseId) {
+        let courses = getData("courses");
+        const course = courses.find((course) => course.id === courseId);
+        if (!course) {
+          alert("Course not found.");
+          return;
+        }
+
+        // Set the global editingCourseId flag
+        editingCourseId = course.id;
+
+        // Populate the form fields with course data
+        document.getElementById("courseTitle").value = course.title;
+        document.getElementById("courseImage").value = course.image;
+        document.getElementById("courseCategory").value = course.categoryId;
+        document.getElementById("courseInstructor").value = course.instructor;
+        document.getElementById("courseDescription").value = course.description;
+        document.getElementById("courseDuration").value = course.duration;
+        document.getElementById("courseContent").value = course.content;
+
+        // Set course cost options based on the current price value
+        if (course.price === "free") {
+          document.querySelector(
+            'input[name="courseCost"][value="free"]'
+          ).checked = true;
+          document.getElementById("paidPriceContainer").style.display = "none";
+          document.getElementById("coursePaidPrice").value = "";
+        } else {
+          document.querySelector(
+            'input[name="courseCost"][value="paid"]'
+          ).checked = true;
+          document.getElementById("paidPriceContainer").style.display = "block";
+          document.getElementById("coursePaidPrice").value = course.price;
+        }
+
+        // Update the submit button text and show the cancel edit button
+        document.getElementById("courseSubmitBtn").textContent =
+          "Update Course";
+        document.getElementById("cancelEditBtn").style.display = "inline-block";
+      }
+
+      // ===============================
+      // Form Submission for Courses
+      // ===============================
       document.getElementById("courseForm").addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -465,6 +542,7 @@
         let courses = getData("courses");
 
         if (editingCourseId !== null) {
+          // Update the existing course
           const courseIndex = courses.findIndex(
             (course) => course.id === editingCourseId
           );
@@ -488,6 +566,7 @@
           document.getElementById("courseSubmitBtn").textContent = "Add Course";
           document.getElementById("cancelEditBtn").style.display = "none";
         } else {
+          // Check for duplicate course titles
           const duplicate = courses.some(
             (course) => course.title.toLowerCase() === title.toLowerCase()
           );
@@ -518,6 +597,40 @@
         document.getElementById("paidPriceContainer").style.display = "none";
       });
 
+      // ===============================
+      // Cancel Edit Handler for Courses
+      // ===============================
+      document.getElementById("cancelEditBtn").addEventListener("click", () => {
+        editingCourseId = null;
+        document.getElementById("courseForm").reset();
+        document.getElementById("courseSubmitBtn").textContent = "Add Course";
+        document.getElementById("cancelEditBtn").style.display = "none";
+        document.getElementById("paidPriceContainer").style.display = "none";
+      });
+
+      // ===============================
+      // Edit Category Functionality
+      // ===============================
+      function editCategory(categoryId) {
+        let categories = getData("categories");
+        const category = categories.find((cat) => cat.id === categoryId);
+        if (!category) {
+          alert("Category not found.");
+          return;
+        }
+
+        // Set the global editingCategoryId flag and populate the form
+        editingCategoryId = category.id;
+        document.getElementById("categoryName").value = category.name;
+        document.getElementById("categorySubmitBtn").textContent =
+          "Update Category";
+        document.getElementById("cancelCategoryEditBtn").style.display =
+          "inline-block";
+      }
+
+      // ===============================
+      // Form Submission for Categories
+      // ===============================
       document
         .getElementById("categoryForm")
         .addEventListener("submit", (e) => {
@@ -530,32 +643,68 @@
             return;
           }
           let categories = getData("categories");
-          const duplicate = categories.some(
-            (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
-          );
-          if (duplicate) {
-            alert("This category already exists.");
-            return;
+
+          if (editingCategoryId !== null) {
+            // Edit mode: Update the existing category
+            const categoryIndex = categories.findIndex(
+              (cat) => cat.id === editingCategoryId
+            );
+            if (categoryIndex === -1) {
+              alert("Category not found.");
+              return;
+            }
+            // Check for duplicate names (excluding the one being edited)
+            const duplicate = categories.some(
+              (cat) =>
+                cat.name.toLowerCase() === categoryName.toLowerCase() &&
+                cat.id !== editingCategoryId
+            );
+            if (duplicate) {
+              alert("A category with this name already exists.");
+              return;
+            }
+            categories[categoryIndex].name = categoryName;
+            alert("Category updated successfully.");
+            editingCategoryId = null;
+            document.getElementById("categorySubmitBtn").textContent =
+              "Add Category";
+            document.getElementById("cancelCategoryEditBtn").style.display =
+              "none";
+          } else {
+            // Add new category mode
+            const duplicate = categories.some(
+              (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+            );
+            if (duplicate) {
+              alert("This category already exists.");
+              return;
+            }
+            const newCategory = {
+              id: Math.floor(Math.random() * 10000),
+              name: categoryName,
+            };
+            categories.push(newCategory);
+            alert("Category added successfully.");
           }
-          const newCategory = {
-            id: Math.floor(Math.random() * 10000),
-            name: categoryName,
-          };
-          categories.push(newCategory);
+
           saveData("categories", categories);
           renderCategories();
+          document.getElementById("categoryForm").reset();
         });
 
       // ===============================
-      // Cancel Edit Handler
+      // Cancel Edit Handler for Categories
       // ===============================
-      document.getElementById("cancelEditBtn").addEventListener("click", () => {
-        editingCourseId = null;
-        document.getElementById("courseForm").reset();
-        document.getElementById("courseSubmitBtn").textContent = "Add Course";
-        document.getElementById("cancelEditBtn").style.display = "none";
-        document.getElementById("paidPriceContainer").style.display = "none";
-      });
+      document
+        .getElementById("cancelCategoryEditBtn")
+        .addEventListener("click", () => {
+          editingCategoryId = null;
+          document.getElementById("categoryForm").reset();
+          document.getElementById("categorySubmitBtn").textContent =
+            "Add Category";
+          document.getElementById("cancelCategoryEditBtn").style.display =
+            "none";
+        });
 
       // ===============================
       // Price Radio Button Change Listener
@@ -567,40 +716,30 @@
         });
       });
 
-      function requestRegistration(courseId) {
-        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-        if (!loggedInUser) {
-          alert("Please login first to enroll in courses.");
+      // ===============================
+      // Registration Functions
+      // ===============================
+      // Function to view registration details in an alert
+      function viewRegistration(registrationId) {
+        const registrations = getData("registrations");
+        const registration = registrations.find((r) => r.id === registrationId);
+        if (!registration) {
+          alert("Registration not found.");
           return;
         }
-        let registrations = getData("registrations");
-        const existingRequest = registrations.find(
-          (r) =>
-            r.courseId === courseId &&
-            r.studentId === loggedInUser.email &&
-            (r.status === "pending" || r.status === "approved")
+        const students = getData("students");
+        const courses = getData("courses");
+        const student = students.find(
+          (s) => s.email === registration.studentId
         );
-        if (existingRequest) {
-          alert(
-            existingRequest.status === "pending"
-              ? "Your registration request for this course is already pending."
-              : "You are already enrolled in this course."
-          );
-          return;
-        }
-        const regId = Math.floor(Math.random() * 10000);
-        const registration = {
-          id: regId,
-          studentId: loggedInUser.email,
-          courseId: courseId,
-          status: "pending",
-        };
-        registrations.push(registration);
-        saveData("registrations", registrations);
-        alert(
-          "Registration request submitted. Your request is now pending approval."
-        );
-        renderCourses();
+        const course = courses.find((c) => c.id === registration.courseId);
+        let details = `Registration ID: ${registration.id}\n`;
+        details += `Student: ${
+          student ? student.name + " (" + student.email + ")" : "Unknown"
+        }\n`;
+        details += `Course: ${course ? course.title : "Unknown"}\n`;
+        details += `Status: ${registration.status}`;
+        alert(details);
       }
 
       function approveRegistration(registrationId) {
@@ -610,6 +749,13 @@
         );
         if (regIndex === -1) {
           alert("Registration not found.");
+          return;
+        }
+        // Only allow changes if the request is still pending.
+        if (registrations[regIndex].status !== "pending") {
+          alert(
+            "This registration request has already been processed and cannot be changed."
+          );
           return;
         }
         registrations[regIndex].status = "approved";
@@ -632,6 +778,7 @@
         alert("Registration approved and course added to enrolled courses.");
         renderRegistrations();
       }
+
       function rejectRegistration(registrationId) {
         let registrations = getData("registrations");
         const regIndex = registrations.findIndex(
@@ -641,11 +788,22 @@
           alert("Registration not found.");
           return;
         }
-        registrations[regIndex].status = "rejec.ted";
+        // Only allow changes if the request is still pending.
+        if (registrations[regIndex].status !== "pending") {
+          alert(
+            "This registration request has already been processed and cannot be changed."
+          );
+          return;
+        }
+        registrations[regIndex].status = "rejected";
         saveData("registrations", registrations);
         alert("Registration rejected.");
         renderRegistrations();
       }
+
+      // ===============================
+      // Navigation Functions
+      // ===============================
       function manageCourses() {
         document.getElementById("courseManagement").style.display = "block";
         document.getElementById("categoryManagement").style.display = "none";
@@ -683,55 +841,13 @@
         window.location.href = "first.html";
       };
 
-      function filterAndDisplayCourses() {
-        let courses = getData("courses");
-        const searchQuery = document
-          .getElementById("search-box")
-          .value.trim()
-          .toLowerCase();
-        const selectedCategory =
-          document.getElementById("category-filter").value;
-        const selectedPrice = document.getElementById("price-filter").value;
-        let filteredCourses = courses;
-        if (searchQuery !== "") {
-          filteredCourses = filteredCourses.filter(
-            (course) =>
-              course.title.toLowerCase().includes(searchQuery) ||
-              course.description.toLowerCase().includes(searchQuery) ||
-              (course.tutor && course.tutor.toLowerCase().includes(searchQuery))
-          );
-        }
-        if (selectedCategory !== "") {
-          filteredCourses = filteredCourses.filter(
-            (course) => course.categoryId == selectedCategory
-          );
-        }
-        if (selectedPrice !== "") {
-          filteredCourses = filteredCourses.filter(
-            (course) => course.price === selectedPrice
-          );
-        }
-        displayCourses(filteredCourses);
-      }
-
-      document
-        .getElementById("search-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          filterAndDisplayCourses();
-        });
-      document
-        .getElementById("category-filter")
-        .addEventListener("change", filterAndDisplayCourses);
-      document
-        .getElementById("price-filter")
-        .addEventListener("change", filterAndDisplayCourses);
-      const courses = getData("courses");
+      // ===============================
+      // Initial Rendering
+      // ===============================
       renderCourses();
       renderCategories();
       renderStudents();
       renderRegistrations();
-      populateCourseCategorySelect();
       populateCourseCategorySelect();
     </script>
   </body>
